@@ -765,7 +765,7 @@ export function Sidebar({
   selectedKeyword = null,
   onMailboxSelect,
   onTagSelect,
-  onCompose: _onCompose,
+  onCompose,
   onSidebarClose,
   onUnreadFilterClick,
   onMarkFolderRead,
@@ -1148,6 +1148,22 @@ export function Sidebar({
 
       {!isCollapsed && <DemoBanner />}
       {!isCollapsed && <VacationBanner />}
+
+      {/* Compose button — KazNIISA customization (above folders) */}
+      {!isEmbedded && onCompose && (
+        <div className={cn("px-2 pt-2", isCollapsed && "flex justify-center")}>
+          <Button
+            onClick={onCompose}
+            className={cn("gap-2 rounded-lg shadow-sm", isCollapsed ? "h-9 w-9 p-0" : "w-full justify-start h-9")}
+            aria-label={t("compose")}
+            title={t("compose")}
+            data-tour="sidebar-compose-button"
+          >
+            <NotebookPen className="h-4 w-4 flex-shrink-0" />
+            {!isCollapsed && <span>{t("compose")}</span>}
+          </Button>
+        </div>
+      )}
 
       {/* Mailbox List */}
       <div className="flex-1 overflow-y-auto" data-tour="sidebar">
