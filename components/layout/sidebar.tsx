@@ -1241,7 +1241,8 @@ export function Sidebar({
         <div className={cn("px-2 pt-2", isCollapsed && "flex justify-center")}>
           <Button
             onClick={onCompose}
-            className={cn("gap-2 rounded-lg shadow-sm", isCollapsed ? "h-9 w-9 p-0" : "w-full justify-start h-9")}
+            size="sm"
+            className={cn("gap-2", isCollapsed && "w-9 px-0")}
             aria-label={t("compose")}
             title={t("compose")}
             data-tour="sidebar-compose-button"
