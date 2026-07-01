@@ -190,7 +190,7 @@ function LoginPageContent() {
     : globalOauthIssuerUrl;
   const [totpCode, setTotpCode] = useState("");
   const [showTotpField, setShowTotpField] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   // Lite (no server session): "remember me" needs Stalwart's token login on the
   // target server. Probe it once per URL and hide the box when it is missing;
   // those sessions then only last as long as the tab (lib/auth/lite-tokens.ts).
