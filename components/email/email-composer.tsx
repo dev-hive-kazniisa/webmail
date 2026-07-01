@@ -926,6 +926,30 @@ export function EmailComposer({
   const stateRef = useRef({ to: toStr, cc: ccStr, bcc: bccStr, subject, body, showCc, showBcc, selectedIdentityId, subAddressTag, draftId, fromOverrideEnabled, fromOverrideEmail, fromOverrideName });
   stateRef.current = { to: toStr, cc: ccStr, bcc: bccStr, subject, body, showCc, showBcc, selectedIdentityId, subAddressTag, draftId, fromOverrideEnabled, fromOverrideEmail, fromOverrideName };
 
+  // ── KazNIISA local patch: auto-fill the subject from attachment filenames ──
+  // When the user attaches files and hasn't typed their own subject yet, seed
+  // the Subject line with the comma-separated attachment names (e.g.
+  // "report-1.pdf, report-2.pdf"). We keep it in sync as attachments are added
+  // or removed, but stop the moment the user edits the subject themselves.
+  const autoSubjectRef = useRef<string>('');
+  const autoSubjectMountedRef = useRef(false);
+  useEffect(() => {
+    // Don't retroactively fill on first mount (e.g. reopening a draft that
+    // already carries attachments but a deliberately empty subject).
+    if (!autoSubjectMountedRef.current) {
+      autoSubjectMountedRef.current = true;
+      return;
+    }
+    const current = stateRef.current.subject;
+    // Only manage the subject while it's empty or still equal to what we last
+    // auto-filled (i.e. the user hasn't typed their own subject).
+    if (current !== '' && current !== autoSubjectRef.current) return;
+    const auto = attachments.map(a => a.name).filter(Boolean).join(', ');
+    if (auto === current) return;
+    autoSubjectRef.current = auto;
+    setSubject(auto);
+  }, [attachments]);
+
   // Track initial values for dirty detection (captured once on first render)
   const initialValuesRef = useRef({ to: toStr, cc: ccStr, bcc: bccStr, subject, body, attachmentCount: attachments.length });
   const isDirtyRef = useRef(false);
