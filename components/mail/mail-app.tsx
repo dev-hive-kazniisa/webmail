@@ -8,6 +8,7 @@ import { EmailList } from "@/components/email/email-list";
 import { MessageListTabs } from "@/components/email/message-list-tabs";
 import { EmailViewer } from "@/components/email/email-viewer";
 import { EmailComposer } from "@/components/email/email-composer";
+import { ComposeModal } from "@/components/email/compose-modal";
 import type { ComposerDraftData } from "@/components/email/email-composer";
 import { ProtocolAccountPicker } from "@/components/protocol/protocol-account-picker";
 import { ThreadConversationView } from "@/components/email/thread-conversation-view";
@@ -112,6 +113,9 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
   const [composerDraftText, setComposerDraftText] = useState("");
   const [pendingDraft, setPendingDraft] = useState<ComposerDraftData | null>(null);
   const [composerSessionId, setComposerSessionId] = useState(0);
+  const [composerMinimized, setComposerMinimized] = useState(false);
+  const [composerMaximized, setComposerMaximized] = useState(false);
+  const composerRequestCloseRef = useRef<(() => void) | null>(null);
   // Plugin-resolved quote header for the next reply/forward composer open.
   // Cleared on close so a subsequent "compose new" doesn't reuse stale state.
   const [composerQuoteHeader, setComposerQuoteHeader] = useState<QuoteHeader | null>(null);
@@ -739,7 +743,7 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
 
   // Initialize keyboard shortcuts
   useKeyboardShortcuts({
-    enabled: isAuthenticated && !showComposer,
+    enabled: isAuthenticated && (!showComposer || composerMinimized),
     emails: activeEmails,
     selectedEmailId: selectedEmail?.id,
     selectionCount: selectedEmailIds.size,
@@ -1588,6 +1592,28 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
     setComposerSessionId(id => id + 1);
     setPendingDraft(null);
   }, []);
+
+  // A new composer session always opens as a regular (non-minimized) window.
+  useEffect(() => {
+    setComposerMinimized(false);
+    setComposerMaximized(false);
+  }, [composerSessionId]);
+
+  // Title for the modal window / minimized bar. Static per session (doesn't
+  // live-track typing) — same approach as the Pro compose-tab title.
+  const composerModalTitle = useMemo(() => {
+    const effectiveMode = pendingDraft?.mode ?? composerMode;
+    const replySubject = selectedEmail?.subject?.trim() ?? '';
+    if (effectiveMode === 'reply' || effectiveMode === 'replyAll') {
+      const base = pendingDraft?.subject?.trim() || replySubject;
+      return base ? buildReplySubject(base, t('email_composer.prefix.reply')) : t('email_composer.reply');
+    }
+    if (effectiveMode === 'forward') {
+      const base = pendingDraft?.subject?.trim() || replySubject;
+      return base ? buildForwardSubject(base, t('email_composer.prefix.forward')) : t('email_composer.forward');
+    }
+    return pendingDraft?.subject?.trim() || t('email_composer.new_message');
+  }, [pendingDraft, composerMode, selectedEmail, t]);
 
   const handleReply = async (draftText?: string) => {
     if (selectedEmail) {
@@ -2899,7 +2925,7 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
       })();
   const isFocusedMailLayout = mailLayout === 'focus';
   const isHorizontalMailLayout = mailLayout === 'horizontal' && !isMobile && !isTablet;
-  const hasViewerContent = showComposer || Boolean(conversationThread) || Boolean(selectedEmail);
+  const hasViewerContent = Boolean(conversationThread) || Boolean(selectedEmail);
   const shouldCollapseListPane = (isTablet && !tabletListVisible) || (!isMobile && isFocusedMailLayout && hasViewerContent);
   const shouldHideViewerPane = !isMobile && !hasViewerContent && isFocusedMailLayout;
   const shouldHideHorizontalViewerPane = isHorizontalMailLayout && !hasViewerContent;
@@ -2908,9 +2934,10 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
   const handleEmailSelect = async (email: { id: string }) => {
     if (!client || !email) return;
 
-    // If composing, suspend the composer (unmount will trigger onSaveState)
-    if (showComposer) {
-      setShowComposer(false);
+    // If composing, minimize the modal — the draft stays live (autosave and
+    // attachment uploads keep running) while the user reads mail.
+    if (showComposer && !composerMinimized) {
+      setComposerMinimized(true);
     }
 
     // Find the list-level email for metadata (accountId, scheduled flags, etc.)
@@ -3675,81 +3702,6 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
               shouldHideHorizontalViewerPane && "md:hidden"
             )}
           >
-            {/* Inline Composer - shown in viewer pane.
-                In Pro/embedded mode the composer is hoisted into its own
-                Pro tab (see the effect below), so we never render it inline. */}
-            {(showComposer && !isEmbedded) ? (
-              <ErrorBoundary
-                fallback={ComposerErrorFallback}
-                onReset={() => {
-                  setShowComposer(false);
-                  setComposerMode('compose');
-                  setComposerQuoteHeader(null);
-                }}
-              >
-                <EmailComposer
-                  key={composerSessionId}
-                  mode={pendingDraft?.mode ?? composerMode}
-                  composeFromAccountEmail={
-                    useAccountStore
-                      .getState()
-                      .getAccountById(viewingAccountId ?? activeAccountId ?? '')?.email
-                  }
-                  replyTo={pendingDraft !== null ? pendingDraft.replyTo : (selectedEmail ? {
-                    from: selectedEmail.from,
-                    replyToAddresses: selectedEmail.replyTo,
-                    to: selectedEmail.to,
-                    cc: selectedEmail.cc,
-                    bcc: selectedEmail.bcc,
-                    subject: selectedEmail.subject,
-                    ...getQuoteBodies(selectedEmail),
-                    receivedAt: selectedEmail.receivedAt,
-                    attachments: selectedEmail.attachments,
-                    messageId: selectedEmail.messageId,
-                    inReplyTo: selectedEmail.inReplyTo,
-                    references: selectedEmail.references,
-                    quoteHeaderHtml: composerQuoteHeader?.html,
-                    quoteHeaderText: composerQuoteHeader?.text,
-                    quoteWrapInBlockquote: composerQuoteHeader?.wrapInBlockquote,
-                  } : undefined)}
-                  initialDraftText={composerDraftText}
-                  initialData={pendingDraft}
-                  onSaveState={(data) => {
-                    if (suppressComposerStateSaveSessionRef.current === composerSessionId) {
-                      suppressComposerStateSaveSessionRef.current = null;
-                      return;
-                    }
-                    setPendingDraft(data);
-                  }}
-                  onSend={async (data) => {
-                    await handleEmailSend(data);
-                    setPendingDraft(null);
-                  }}
-                  onScheduledSendCreated={async () => {
-                    if (client) {
-                      await refreshScheduledMetadata(client);
-                      if (isScheduledView) await fetchScheduledEmails(client);
-                    }
-                    setShowComposer(false);
-                    setPendingDraft(null);
-                  }}
-                  onClose={() => {
-                    setShowComposer(false);
-                    setComposerMode('compose');
-                    setComposerDraftText("");
-                    setPendingDraft(null);
-                    setComposerQuoteHeader(null);
-                    if (isMobile) {
-                      setActiveView('list');
-                    }
-                  }}
-                  onDiscardDraft={(draftId) => {
-                    handleDiscardDraft(draftId);
-                    setPendingDraft(null);
-                  }}
-                />
-              </ErrorBoundary>
-            ) : (
             <>
             {/* Pending draft banner */}
             {pendingDraft && (
@@ -3881,7 +3833,6 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
               </>
             )}
             </>
-            )}
           </div>
           </div>
 
@@ -3897,6 +3848,97 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
           )}
         </div>
         </div>
+
+        {/* Compose modal — centered window (mail.ru-style), minimizable.
+            In Pro/embedded mode the composer is hoisted into its own Pro tab
+            (see the effect above), so we never render it here. */}
+        {(showComposer && !isEmbedded) && (
+          <ComposeModal
+            minimized={composerMinimized}
+            maximized={composerMaximized}
+            title={composerModalTitle}
+            onMinimize={() => setComposerMinimized(true)}
+            onRestore={() => setComposerMinimized(false)}
+            onToggleMaximize={() => setComposerMaximized((m) => !m)}
+            onRequestClose={() => composerRequestCloseRef.current?.()}
+          >
+            <ErrorBoundary
+              fallback={ComposerErrorFallback}
+              onReset={() => {
+                setShowComposer(false);
+                setComposerMode('compose');
+                setComposerQuoteHeader(null);
+                setComposerMinimized(false);
+                setComposerMaximized(false);
+              }}
+            >
+              <EmailComposer
+                key={composerSessionId}
+                requestCloseRef={composerRequestCloseRef}
+                mode={pendingDraft?.mode ?? composerMode}
+                composeFromAccountEmail={
+                  useAccountStore
+                    .getState()
+                    .getAccountById(viewingAccountId ?? activeAccountId ?? '')?.email
+                }
+                replyTo={pendingDraft !== null ? pendingDraft.replyTo : (selectedEmail ? {
+                  from: selectedEmail.from,
+                  replyToAddresses: selectedEmail.replyTo,
+                  to: selectedEmail.to,
+                  cc: selectedEmail.cc,
+                  bcc: selectedEmail.bcc,
+                  subject: selectedEmail.subject,
+                  ...getQuoteBodies(selectedEmail),
+                  receivedAt: selectedEmail.receivedAt,
+                  attachments: selectedEmail.attachments,
+                  messageId: selectedEmail.messageId,
+                  inReplyTo: selectedEmail.inReplyTo,
+                  references: selectedEmail.references,
+                  quoteHeaderHtml: composerQuoteHeader?.html,
+                  quoteHeaderText: composerQuoteHeader?.text,
+                  quoteWrapInBlockquote: composerQuoteHeader?.wrapInBlockquote,
+                } : undefined)}
+                initialDraftText={composerDraftText}
+                initialData={pendingDraft}
+                onSaveState={(data) => {
+                  if (suppressComposerStateSaveSessionRef.current === composerSessionId) {
+                    suppressComposerStateSaveSessionRef.current = null;
+                    return;
+                  }
+                  setPendingDraft(data);
+                }}
+                onSend={async (data) => {
+                  await handleEmailSend(data);
+                  setPendingDraft(null);
+                }}
+                onScheduledSendCreated={async () => {
+                  if (client) {
+                    await refreshScheduledMetadata(client);
+                    if (isScheduledView) await fetchScheduledEmails(client);
+                  }
+                  setShowComposer(false);
+                  setPendingDraft(null);
+                }}
+                onClose={() => {
+                  setShowComposer(false);
+                  setComposerMode('compose');
+                  setComposerDraftText("");
+                  setPendingDraft(null);
+                  setComposerQuoteHeader(null);
+                  setComposerMinimized(false);
+                  setComposerMaximized(false);
+                  if (isMobile) {
+                    setActiveView('list');
+                  }
+                }}
+                onDiscardDraft={(draftId) => {
+                  handleDiscardDraft(draftId);
+                  setPendingDraft(null);
+                }}
+              />
+            </ErrorBoundary>
+          </ComposeModal>
+        )}
 
         {/* Keyboard Shortcuts Modal */}
         <KeyboardShortcutsModal
