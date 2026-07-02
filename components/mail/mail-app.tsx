@@ -10,6 +10,7 @@ import { useConfig } from "@/hooks/use-config";
 import { productName } from "@/lib/product-name";
 import { MessageListTabs, useMessageListPanelProps } from "@/components/email/message-list-tabs";
 import dynamic from "next/dynamic";
+import { ComposeModal } from "@/components/email/compose-modal";
 import type { ComposerDraftData } from "@/components/email/email-composer";
 import { ReplyDock } from "@/components/mail/reply-dock";
 import { addEcho, isUndoWindow, mergeEchoes, nextSendTime, raiseThreadCount, scheduledShownTotal, sentEcho, settleSent, withoutHeldSend } from "@/lib/held-send";
@@ -227,7 +228,7 @@ import { announceSent, cancelAnnouncedSend, releaseAnnouncedSend } from "@/lib/p
 import { composeOptionsFor, runBeforeCompose, type ComposePrefill, type ComposerOpenMode } from "@/lib/plugin-compose-gate";
 import { formatMailto } from "@/lib/protocol-handlers/mailto";
 import { buildQuoteHeader } from "@/lib/quote-header";
-import { buildComposeTabTitle, buildReplySubject } from "@/lib/subject-prefix";
+import { buildComposeTabTitle, buildReplySubject, buildForwardSubject } from "@/lib/subject-prefix";
 import { buildForwardAsAttachmentPayload, buildBatchForwardAsAttachmentPayload } from "@/lib/forward-as-attachment";
 import { getEffectiveLocale } from '@/i18n/detect-locale';
 import {
@@ -368,6 +369,8 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   // to open. Dropped once the composer hands its own state back, so a
   // remount restores what the user wrote instead.
   const [composerPrefill, setComposerPrefill] = useState<ComposePrefill | null>(null);
+  const [composerMinimized, setComposerMinimized] = useState(false);
+  const [composerMaximized, setComposerMaximized] = useState(false);
   // Plugin-resolved quote header for the next reply/forward composer open.
   // Cleared on close so a subsequent "compose new" doesn't reuse stale state.
   const [composerQuoteHeader, setComposerQuoteHeader] = useState<QuoteHeader | null>(null);
@@ -1422,7 +1425,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   // Another folder: the line about the message that didn't open goes.
   useEffect(() => setOpenFailure(null), [selectedMailbox, setOpenFailure]);
   useKeyboardShortcuts({
-    enabled: isAuthenticated && !showComposer && mailShortcutsApply,
+    enabled: isAuthenticated && (!showComposer || composerMinimized) && mailShortcutsApply,
     singleKeyShortcuts,
     emails: activeEmails,
     // The message that didn't open is still what the keys are about.
@@ -3114,6 +3117,28 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
     await handleEditDraft(found.draft, found.source, { underMessage: true, replyAllTo: mode === 'replyAll' ? open : undefined });
     return true;
   };
+
+  // A new composer session always opens as a regular (non-minimized) window.
+  useEffect(() => {
+    setComposerMinimized(false);
+    setComposerMaximized(false);
+  }, [composerSessionId]);
+
+  // Title for the modal window / minimized bar. Static per session (doesn't
+  // live-track typing) — same approach as the Pro compose-tab title.
+  const composerModalTitle = useMemo(() => {
+    const effectiveMode = pendingDraft?.mode ?? composerMode;
+    const replySubject = composerSourceEmail?.subject?.trim() ?? '';
+    if (effectiveMode === 'reply' || effectiveMode === 'replyAll') {
+      const base = pendingDraft?.subject?.trim() || replySubject;
+      return base ? buildReplySubject(base, t('email_composer.prefix.reply')) : t('email_composer.reply');
+    }
+    if (effectiveMode === 'forward') {
+      const base = pendingDraft?.subject?.trim() || replySubject;
+      return base ? buildForwardSubject(base, t('email_composer.prefix.forward')) : t('email_composer.forward');
+    }
+    return pendingDraft?.subject?.trim() || t('email_composer.new_message');
+  }, [pendingDraft, composerMode, composerSourceEmail, t]);
 
   const handleReply = async (draftText?: string) => {
     const composerWasOpen = showComposer;
@@ -5547,6 +5572,9 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   const mvInlineReply = mvShell && showComposer && !isEmbedded && !mvReplyPoppedOut
     && (pendingDraft?.mode ?? composerMode) !== 'compose' && Boolean(selectedEmail);
   const floatingComposer = mvShell && showComposer && !isEmbedded && !mvInlineReply;
+  // Every other layout opens the composer in a centred modal window
+  // (ComposeModal) instead of the reading pane or a dock under the message.
+  const modalComposer = !mvShell && showComposer && !isEmbedded;
   // Elsewhere on a computer a reply or forward docks under the message it
   // answers, which stays readable above it, as in Gmail and Outlook. Not
   // for a draft being edited: that message is the draft itself, and not
@@ -5555,7 +5583,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   // Decided as it opens and kept for the session: moving it would mount it
   // anew when the message goes away (another folder opened meanwhile) or
   // the setting changes while it is open.
-  const dockCandidate = !mvShell && !isMobile && showComposer && !isEmbedded && !floatingComposer
+  const dockCandidate = !mvShell && !isMobile && showComposer && !isEmbedded && !floatingComposer && !modalComposer
     && ((pendingDraft?.mode ?? composerMode) !== 'compose' || resumedReplySession === composerSessionId);
   const dockWanted = dockCandidate && Boolean(selectedEmail) && !selectedEmail?.keywords?.$draft;
   if (dockWanted && !replyUnderMessage && dockedSession !== composerSessionId && paneSession !== composerSessionId) {
@@ -5581,7 +5609,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   const selectionTakesReader = !isMobile && !isFocusedMailLayout && !mvShell && !isScheduledView
     && selectedEmailKeys.size > 0
     && !(openRowKeys && [...selectedEmailKeys].every((key) => openRowKeys.has(key)));
-  const hasViewerContent = (showComposer && !floatingComposer) || Boolean(conversationThread)
+  const hasViewerContent = (showComposer && !floatingComposer && !modalComposer) || Boolean(conversationThread)
     || Boolean(selectedEmail && !(mvShell && cursorOnly) && !selectionTakesReader) || deepLinkPane !== null;
   // A linked message on a phone opens over the list, as one picked there does.
   const mobileView = deepLinkPane !== null && isMobile ? 'viewer' : activeView;
@@ -5609,10 +5637,12 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
     setCursorOnly(false);
     setOpenFailure(null);
 
-    // If composing, close the composer the way its X does: it keeps the
-    // draft and says so. Mountain View's compose window stays open while
-    // other mail is read, as Gmail's does. (#1229)
-    if (showComposer && !floatingComposer) {
+    // If composing, minimize the modal: the draft stays live (autosave and
+    // uploads keep running). Mountain View's compose window stays open while
+    // other mail is read, as Gmail's does (#1229).
+    if (modalComposer) {
+      if (!composerMinimized) setComposerMinimized(true);
+    } else if (showComposer && !floatingComposer) {
       const requestClose = composerRequestCloseRef.current;
       if (requestClose) requestClose();
       else setShowComposer(false);
@@ -5917,6 +5947,8 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
         setShowComposer(false);
         setComposerMode('compose');
         setComposerQuoteHeader(null);
+        setComposerMinimized(false);
+        setComposerMaximized(false);
       }}
     >
       <EmailComposer
@@ -6035,6 +6067,8 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
           setPendingDraft(null);
           setComposerPrefill(null);
           setComposerQuoteHeader(null);
+          setComposerMinimized(false);
+          setComposerMaximized(false);
           if (isMobile) {
             setActiveView('list');
           }
@@ -6724,7 +6758,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             {/* Inline Composer - shown in viewer pane.
                 In Pro/embedded mode the composer is hoisted into its own
                 Pro tab (see the effect below), so we never render it inline. */}
-            {(showComposer && !isEmbedded && !floatingComposer && !mvInlineReply && !dockedReply) ? composerNode : (
+            {(showComposer && !isEmbedded && !floatingComposer && !mvInlineReply && !dockedReply && !modalComposer) ? composerNode : (
             <>
             {/* Pending draft banner */}
             {pendingDraft && !dockedReply && (
@@ -6979,7 +7013,6 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             )}
             {dockedReply && <ReplyDock>{composerNode}</ReplyDock>}
             </>
-            )}
           </section>
           </div>
 
@@ -7002,6 +7035,23 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             Desktop only; Mountain View has them in its side panel. */}
         {!mvShell && !isMobile && !isEmbedded && !inlineApp && !fullscreenReading && <PluginSidePanel />}
         </div>
+
+        {/* Compose modal — centered window (mail.ru-style), minimizable.
+            In Pro/embedded mode the composer is hoisted into its own Pro tab
+            (see the effect above), so we never render it here. */}
+        {modalComposer && (
+          <ComposeModal
+            minimized={composerMinimized}
+            maximized={composerMaximized}
+            title={composerModalTitle}
+            onMinimize={() => setComposerMinimized(true)}
+            onRestore={() => setComposerMinimized(false)}
+            onToggleMaximize={() => setComposerMaximized((m) => !m)}
+            onRequestClose={() => composerRequestCloseRef.current?.()}
+          >
+            {composerNode}
+          </ComposeModal>
+        )}
 
         {/* Keyboard Shortcuts Modal */}
         <LazyKeyboardShortcutsModal
