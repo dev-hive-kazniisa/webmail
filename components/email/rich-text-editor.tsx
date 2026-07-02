@@ -80,6 +80,10 @@ interface RichTextEditorProps {
   className?: string;
   hasError?: boolean;
   onEditorReady?: (editor: Editor) => void;
+  /** Extra classes/styles for the formatting toolbar row — used by the
+   *  composer to make the toolbar sticky so it stays visible while scrolling. */
+  toolbarClassName?: string;
+  toolbarStyle?: React.CSSProperties;
 }
 
 function ToolbarButton({
@@ -170,6 +174,8 @@ export function RichTextEditor({
   className,
   hasError,
   onEditorReady,
+  toolbarClassName,
+  toolbarStyle,
 }: RichTextEditorProps) {
   const rtlEditingSupport = useSettingsStore((st) => st.rtlEditingSupport);
   const tComposer = useTranslations("email_composer");
@@ -358,7 +364,13 @@ export function RichTextEditor({
   return (
     <div className={cn("flex flex-col", hasError && "ring-2 ring-red-500 dark:ring-red-400 rounded", className)}>
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 px-3 py-1.5 border-b border-border/50 bg-muted/30">
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-0.5 px-3 py-1.5 border-b border-border/50 bg-muted/30",
+          toolbarClassName
+        )}
+        style={toolbarStyle}
+      >
         <ToolbarButton
           active={editor.isActive("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
