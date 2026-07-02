@@ -778,7 +778,11 @@
       "background_color": "Culoarea fundalului",
       "remove_background_color": "Elimină culoarea fundalului"
     },
-    "send_filing_warning": "Trimis - dar curățarea ulterioară a eșuat, poate rămâne o ciornă veche."
+    "send_filing_warning": "Trimis - dar curățarea ulterioară a eșuat, poate rămâne o ciornă veche.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmare",

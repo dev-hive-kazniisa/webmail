@@ -778,7 +778,11 @@
       "background_color": "Kolor tła",
       "remove_background_color": "Usuń kolor tła"
     },
-    "send_filing_warning": "Wysłano - ale późniejsze porządkowanie nie powiodło się, może pozostać nieaktualna wersja robocza."
+    "send_filing_warning": "Wysłano - ale późniejsze porządkowanie nie powiodło się, może pozostać nieaktualna wersja robocza.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Potwierdź",
