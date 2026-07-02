@@ -915,7 +915,7 @@
   "email_composer": {
     "select_from_directory": "Выбрать из справочника",
     "minimize": "Свернуть",
-    "maximize": "Во весь экран",
+    "maximize": "Развернуть",
     "restore": "Восстановить",
     "new_message": "Новое письмо",
     "signature_edit_hint": "Дважды щёлкните, чтобы изменить подпись",
@@ -1163,6 +1163,8 @@
     "send_guard_failed": "Не отправлено: плагин, проверяющий письма перед отправкой, завершился с ошибкой или не ответил.",
     "cut": "Вырезать",
     "copy": "Копировать",
+    "restore_size": "Восстановить размер",
+    "close": "Закрыть",
     "recipient_remove_named": "Убрать {name}",
     "recipient_chip_hint": "Delete убирает получателя, Enter открывает другие действия",
     "recipient_move_to": "Переместить в {field}",
