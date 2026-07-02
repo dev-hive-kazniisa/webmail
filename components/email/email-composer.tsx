@@ -1022,6 +1022,25 @@ export function EmailComposer({
   const ccDropdownRef = useRef<HTMLDivElement>(null);
   const bccDropdownRef = useRef<HTMLDivElement>(null);
 
+  // ── KazNIISA local patch: keep Subject + formatting toolbar pinned ──
+  // The composer body scrolls inside one overflow-auto container that also
+  // holds the recipient/subject rows. To keep the Subject line and the
+  // rich-text toolbar always visible (mail.ru-style) while a long message
+  // scrolls, the Subject row is a sticky child of the scroll container and the
+  // toolbar sticks right below it — offset by the measured Subject-row height.
+  const stickySubjectRef = useRef<HTMLDivElement>(null);
+  const [stickySubjectHeight, setStickySubjectHeight] = useState(0);
+  useEffect(() => {
+    const el = stickySubjectRef.current;
+    if (!el) return;
+    const measure = () => setStickySubjectHeight(el.offsetHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const focusSubject = useCallback(() => {
     subjectInputRef.current?.focus();
   }, []);
@@ -2349,8 +2368,8 @@ export function EmailComposer({
       </div>
 
       <div className="flex-1 min-h-0 overflow-auto">
-        {/* Fields section */}
-        <div className="space-y-0 border-b">
+        {/* Fields section (recipients — these scroll away) */}
+        <div className="space-y-0">
           {/* From field */}
           <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border/50">
             <span className="text-sm text-muted-foreground w-12 md:w-16 shrink-0">{t('from')}:</span>
@@ -2609,26 +2628,32 @@ export function EmailComposer({
               />
             </div>
           )}
+        </div>
 
-          {/* Subject field */}
-          <div className="flex items-center gap-2 px-4 py-2.5">
-            <span className="text-sm text-muted-foreground w-12 md:w-16 shrink-0">{t('subject_label')}</span>
-            <Input
-              ref={subjectInputRef}
-              data-testid="composer-subject"
-              type="text"
-              placeholder={t('subject_placeholder')}
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Tab' && !e.shiftKey) {
-                  e.preventDefault();
-                  focusBody();
-                }
-              }}
-              className="flex-1 border-0 focus-visible:ring-0 h-8 px-0 text-sm"
-            />
-          </div>
+        {/* Subject — sticky (KazNIISA patch): pinned at the top of the scroll
+            area together with the toolbar below it, so the user always sees the
+            subject + text-formatting controls while a long message scrolls; the
+            recipient rows above scroll away. */}
+        <div
+          ref={stickySubjectRef}
+          className="sticky top-0 z-30 bg-background border-b flex items-center gap-2 px-4 py-2.5"
+        >
+          <span className="text-sm text-muted-foreground w-12 md:w-16 shrink-0">{t('subject_label')}</span>
+          <Input
+            ref={subjectInputRef}
+            data-testid="composer-subject"
+            type="text"
+            placeholder={t('subject_placeholder')}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Tab' && !e.shiftKey) {
+                e.preventDefault();
+                focusBody();
+              }
+            }}
+            className="flex-1 border-0 focus-visible:ring-0 h-8 px-0 text-sm"
+          />
         </div>
 
         {/* Body */}
@@ -2660,6 +2685,8 @@ export function EmailComposer({
               placeholder={t('body_placeholder')}
               hasError={validationErrors.body}
               onEditorReady={(ed) => { editorRef.current = ed; }}
+              toolbarClassName="sticky z-20 !bg-muted"
+              toolbarStyle={{ top: stickySubjectHeight }}
             />
           </div>
         )}
