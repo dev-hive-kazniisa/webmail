@@ -3949,8 +3949,9 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
             )}
           >
             <>
-            {/* Pending draft banner */}
-            {pendingDraft && (
+            {/* Pending draft banner — hidden while the composer modal is open
+                (incl. minimized), so it doesn't duplicate the minimized bar. */}
+            {pendingDraft && !showComposer && (
               <button
                 onClick={() => {
                   setShowComposer(true);
