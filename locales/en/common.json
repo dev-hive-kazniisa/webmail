@@ -815,7 +815,9 @@
   "email_composer": {
     "select_from_directory": "Select from directory",
     "minimize": "Minimize",
-    "maximize": "Full screen",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close",
     "restore": "Restore",
     "new_message": "New message",
     "signature_edit_hint": "Double-click to edit the signature",
