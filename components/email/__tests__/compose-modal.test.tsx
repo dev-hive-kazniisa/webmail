@@ -66,12 +66,29 @@ describe('ComposeModal', () => {
 
   it('minimized bar X requests dirty-aware close', () => {
     const { props } = renderModal({ minimized: true });
-    fireEvent.click(screen.getByLabelText('close'));
+    fireEvent.click(screen.getByTestId('compose-minimized-close'));
     expect(props.onRequestClose).toHaveBeenCalledOnce();
   });
 
   it('does not render the minimized bar while open', () => {
     renderModal();
-    expect(screen.queryByLabelText('close')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('compose-minimized-close')).not.toBeInTheDocument();
+  });
+
+  it('renders a close control in the window controls, rightmost of the group', () => {
+    renderModal();
+    const close = screen.getByTestId('compose-window-close');
+    const maximize = screen.getByLabelText('maximize');
+    expect(close).toBeInTheDocument();
+    // Close follows minimize/maximize in DOM order → rightmost in the flex row.
+    expect(
+      maximize.compareDocumentPosition(close) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  });
+
+  it('window-control close requests dirty-aware close', () => {
+    const { props } = renderModal();
+    fireEvent.click(screen.getByTestId('compose-window-close'));
+    expect(props.onRequestClose).toHaveBeenCalledOnce();
   });
 });
