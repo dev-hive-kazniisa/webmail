@@ -66,7 +66,10 @@ export function ComposeModal({
           )}
         >
           {/* Window controls sit over the free right side of the composer's
-              own header (desktop-only; the composer's own X keeps closing). */}
+              own header (desktop-only). Order: minimize, maximize, close —
+              close is the rightmost/outermost, standard window-control order.
+              Close routes through the composer's dirty-aware guard, same as
+              the composer's own header X. */}
           <div className="absolute right-3 top-3 z-10 hidden md:flex items-center gap-1">
             <Button
               variant="ghost"
@@ -87,6 +90,17 @@ export function ComposeModal({
               title={maximized ? t("restore_size") : t("maximize")}
             >
               {maximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={onRequestClose}
+              aria-label={t("close")}
+              title={t("close")}
+              data-testid="compose-window-close"
+            >
+              <X className="w-4 h-4" />
             </Button>
           </div>
           <div className="flex-1 min-h-0 flex flex-col">{children}</div>
@@ -109,6 +123,7 @@ export function ComposeModal({
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-r-lg"
             aria-label={t("close")}
             title={t("close")}
+            data-testid="compose-minimized-close"
           >
             <X className="w-4 h-4" />
           </button>
