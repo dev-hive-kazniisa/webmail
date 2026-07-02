@@ -6760,8 +6760,9 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                 Pro tab (see the effect below), so we never render it inline. */}
             {(showComposer && !isEmbedded && !floatingComposer && !mvInlineReply && !dockedReply && !modalComposer) ? composerNode : (
             <>
-            {/* Pending draft banner */}
-            {pendingDraft && !dockedReply && (
+            {/* Pending draft banner — hidden while the composer modal is open
+                (incl. minimized), so it doesn't duplicate the minimized bar. */}
+            {pendingDraft && !dockedReply && !showComposer && (
               <div className="flex items-center bg-primary/10 border-b border-primary/20" data-testid="continue-draft-bar">
                 <button
                   onClick={() => {
