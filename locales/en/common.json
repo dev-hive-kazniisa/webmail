@@ -725,7 +725,11 @@
       "delete_table": "Delete table",
       "pick_size": "Pick size"
     },
-    "send_filing_warning": "Sent - but the post-send cleanup failed, a stale draft may remain."
+    "send_filing_warning": "Sent - but the post-send cleanup failed, a stale draft may remain.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirm",
