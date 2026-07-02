@@ -846,7 +846,11 @@
     "pop_out": "답장을 별도 창에서 열기",
     "send_guard_failed": "보내지 않았습니다 - 보내기 전에 메시지를 확인하는 플러그인이 실패했거나 응답하지 않았습니다.",
     "cut": "잘라내기",
-    "copy": "복사"
+    "copy": "복사",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "확인",

@@ -846,7 +846,11 @@
     "pop_out": "Atvērt atbildi atsevišķā logā",
     "send_guard_failed": "Nav nosūtīts - spraudnis, kas pārbauda ziņojumus pirms sūtīšanas, neizdevās vai neatbildēja.",
     "cut": "Izgriezt",
-    "copy": "Kopēt"
+    "copy": "Kopēt",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Apstiprināt",

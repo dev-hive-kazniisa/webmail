@@ -846,7 +846,11 @@
     "pop_out": "Yanıtı ayrı pencerede aç",
     "send_guard_failed": "Gönderilmedi - iletileri göndermeden önce denetleyen bir eklenti başarısız oldu veya yanıt vermedi.",
     "cut": "Kes",
-    "copy": "Kopyala"
+    "copy": "Kopyala",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Onayla",

@@ -846,7 +846,11 @@
     "pop_out": "返信を別ウィンドウで開く",
     "send_guard_failed": "送信されませんでした - 送信前にメッセージを確認するプラグインが失敗したか、応答しませんでした。",
     "cut": "切り取り",
-    "copy": "コピー"
+    "copy": "コピー",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "確認",

@@ -846,7 +846,11 @@
     "pop_out": "Deschide răspunsul într-o fereastră",
     "send_guard_failed": "Nu s-a trimis - un plugin care verifică mesajele înainte de trimitere a eșuat sau nu a răspuns.",
     "cut": "Decupează",
-    "copy": "Copiază"
+    "copy": "Copiază",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmare",

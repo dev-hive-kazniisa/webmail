@@ -846,7 +846,11 @@
     "pop_out": "Válasz megnyitása külön ablakban",
     "send_guard_failed": "Nem lett elküldve - egy bővítmény, amely küldés előtt ellenőrzi az üzeneteket, hibát jelzett vagy nem válaszolt.",
     "cut": "Kivágás",
-    "copy": "Másolás"
+    "copy": "Másolás",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Megerősítés",

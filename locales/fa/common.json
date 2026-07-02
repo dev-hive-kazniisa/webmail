@@ -846,7 +846,11 @@
     "pop_out": "باز کردن پاسخ در پنجره جدا",
     "send_guard_failed": "ارسال نشد - افزونه‌ای که پیام‌ها را پیش از ارسال بررسی می‌کند ناموفق بود یا پاسخ نداد.",
     "cut": "برش",
-    "copy": "کپی"
+    "copy": "کپی",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "تأیید",

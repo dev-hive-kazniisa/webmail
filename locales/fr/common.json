@@ -846,7 +846,11 @@
     "pop_out": "Ouvrir la réponse dans une fenêtre",
     "send_guard_failed": "Non envoyé - un plugin qui vérifie les messages avant l'envoi a échoué ou n'a pas répondu.",
     "cut": "Couper",
-    "copy": "Copier"
+    "copy": "Copier",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmer",

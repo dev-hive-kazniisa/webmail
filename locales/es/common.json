@@ -846,7 +846,11 @@
     "pop_out": "Abrir la respuesta en una ventana",
     "send_guard_failed": "No enviado: un complemento que revisa los mensajes antes de enviarlos falló o no respondió.",
     "cut": "Cortar",
-    "copy": "Copiar"
+    "copy": "Copiar",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmar",

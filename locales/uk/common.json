@@ -846,7 +846,11 @@
     "pop_out": "Відкрити відповідь в окремому вікні",
     "send_guard_failed": "Не надіслано: плагін, що перевіряє листи перед надсиланням, завершився з помилкою або не відповів.",
     "cut": "Вирізати",
-    "copy": "Копіювати"
+    "copy": "Копіювати",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Підтвердити",

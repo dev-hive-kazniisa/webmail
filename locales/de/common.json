@@ -846,7 +846,11 @@
     "pop_out": "Antwort in eigenem Fenster öffnen",
     "send_guard_failed": "Nicht gesendet - ein Plugin, das Nachrichten vor dem Senden prüft, ist fehlgeschlagen oder hat nicht geantwortet.",
     "cut": "Ausschneiden",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Bestätigen",

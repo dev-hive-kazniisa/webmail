@@ -846,7 +846,11 @@
     "pop_out": "Åbn svaret i et vindue",
     "send_guard_failed": "Ikke sendt - et plugin, der kontrollerer beskeder før afsendelse, fejlede eller svarede ikke.",
     "cut": "Klip",
-    "copy": "Kopiér"
+    "copy": "Kopiér",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Bekræft",

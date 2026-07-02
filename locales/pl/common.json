@@ -846,7 +846,11 @@
     "pop_out": "Otwórz odpowiedź w oknie",
     "send_guard_failed": "Nie wysłano - wtyczka sprawdzająca wiadomości przed wysłaniem zawiodła lub nie odpowiedziała.",
     "cut": "Wytnij",
-    "copy": "Kopiuj"
+    "copy": "Kopiuj",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Potwierdź",

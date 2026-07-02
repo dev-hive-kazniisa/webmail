@@ -846,7 +846,11 @@
     "pop_out": "Otevřít odpověď v okně",
     "send_guard_failed": "Neodesláno - plugin, který kontroluje zprávy před odesláním, selhal nebo neodpověděl.",
     "cut": "Vyjmout",
-    "copy": "Kopírovat"
+    "copy": "Kopírovat",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Potvrdit",

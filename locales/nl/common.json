@@ -846,7 +846,11 @@
     "pop_out": "Antwoord in een apart venster openen",
     "send_guard_failed": "Niet verzonden - een plug-in die berichten controleert voor het verzenden is mislukt of reageerde niet.",
     "cut": "Knippen",
-    "copy": "Kopiëren"
+    "copy": "Kopiëren",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Bevestigen",
