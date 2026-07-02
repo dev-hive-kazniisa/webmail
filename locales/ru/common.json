@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Отображаемое имя",
     "autocomplete_search_server": "Искать на сервере",
     "autocomplete_searching": "Поиск...",
-    "send_filing_warning": "Отправлено - но последующая очистка не удалась, может остаться устаревший черновик."
-  },
+    "send_filing_warning": "Отправлено - но последующая очистка не удалась, может остаться устаревший черновик.",
+    "minimize": "Свернуть",
+    "maximize": "Развернуть",
+    "restore_size": "Восстановить размер",
+    "close": "Закрыть"  },
   "confirm_dialog": {
     "confirm": "Подтвердить",
     "cancel": "Отмена"

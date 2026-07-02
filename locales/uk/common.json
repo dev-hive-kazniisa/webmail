@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Відображуване ім'я",
     "autocomplete_search_server": "Шукати на сервері",
     "autocomplete_searching": "Пошук...",
-    "send_filing_warning": "Надіслано - але подальше очищення не вдалося, може залишитися застаріла чернетка."
-  },
+    "send_filing_warning": "Надіслано - але подальше очищення не вдалося, може залишитися застаріла чернетка.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"  },
   "confirm_dialog": {
     "confirm": "Підтвердити",
     "cancel": "Скасувати"

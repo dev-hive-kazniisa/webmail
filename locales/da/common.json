@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Visningsnavn",
     "autocomplete_search_server": "Søg på serveren",
     "autocomplete_searching": "Søger...",
-    "send_filing_warning": "Sendt - men oprydningen bagefter mislykkedes, en forældet kladde kan blive stående."
-  },
+    "send_filing_warning": "Sendt - men oprydningen bagefter mislykkedes, en forældet kladde kan blive stående.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"  },
   "confirm_dialog": {
     "confirm": "Bekræft",
     "cancel": "Annuller"

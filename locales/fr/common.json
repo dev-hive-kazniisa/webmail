@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Nom d'affichage",
     "autocomplete_search_server": "Rechercher sur le serveur",
     "autocomplete_searching": "Recherche en cours...",
-    "send_filing_warning": "Envoyé - mais le nettoyage après envoi a échoué, un ancien brouillon peut subsister."
-  },
+    "send_filing_warning": "Envoyé - mais le nettoyage après envoi a échoué, un ancien brouillon peut subsister.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"  },
   "confirm_dialog": {
     "confirm": "Confirmer",
     "cancel": "Annuler"

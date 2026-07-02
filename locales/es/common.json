@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Nombre para mostrar",
     "autocomplete_search_server": "Buscar en el servidor",
     "autocomplete_searching": "Buscando...",
-    "send_filing_warning": "Enviado - pero la limpieza posterior falló, puede quedar un borrador obsoleto."
-  },
+    "send_filing_warning": "Enviado - pero la limpieza posterior falló, puede quedar un borrador obsoleto.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"  },
   "confirm_dialog": {
     "confirm": "Confirmar",
     "cancel": "Cancelar"

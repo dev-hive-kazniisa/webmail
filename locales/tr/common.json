@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Görünen ad",
     "autocomplete_search_server": "Sunucuda ara",
     "autocomplete_searching": "Aranıyor...",
-    "send_filing_warning": "Gönderildi - ancak sonrasındaki temizleme başarısız oldu, eski bir taslak kalabilir."
-  },
+    "send_filing_warning": "Gönderildi - ancak sonrasındaki temizleme başarısız oldu, eski bir taslak kalabilir.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"  },
   "confirm_dialog": {
     "confirm": "Onayla",
     "cancel": "İptal"
