@@ -23,6 +23,9 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+// Bump whenever a `migrateSettings` step is added (see the function below).
+export const SETTINGS_STORE_VERSION = 8;
+
 // Settings sync state (module-level, not persisted)
 let syncEnabled = false;
 let syncUsername: string | null = null;
@@ -564,7 +567,7 @@ const DEFAULT_SETTINGS = {
   messageSpacing: 'auto' as MessageSpacing,
   plainTextFont: 'sans' as PlainTextFont,
   mailAttachmentAction: 'preview' as MailAttachmentAction,
-  attachmentPosition: 'beside-sender' as AttachmentPosition,
+  attachmentPosition: 'below-header' as AttachmentPosition,
   emailAlwaysLightMode: false,
   archiveMode: 'single' as ArchiveMode,
   hoverActions: ['delete', 'star', 'markRead', 'archive'] as HoverAction[],
@@ -1166,7 +1169,7 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'settings-storage',
-      version: 7,
+      version: SETTINGS_STORE_VERSION,
       migrate: migrateSettings,
       onRehydrateStorage: () => {
         return (state) => {
@@ -1256,6 +1259,15 @@ export function migrateSettings(persisted: unknown, version: number): SettingsSt
         // already received it via main's v6 bump keep their populated map.
         if (version < 6 || !isPlainRecord(state.preferredIdentityIds)) {
           state.preferredIdentityIds = {};
+        }
+        // v8 (KazNIISA patch): attachments now default to a row directly above
+        // the message body (`below-header`) instead of a chip cluster beside the
+        // sender (`beside-sender`) - users were failing to notice attachments in
+        // the old off-to-the-side spot. Flip existing users off the old default
+        // so the change reaches them (server-side settings sync is disabled on
+        // this deployment, so the locally persisted value is authoritative).
+        if (version < 8 && state.attachmentPosition !== 'below-header') {
+          state.attachmentPosition = 'below-header';
         }
         return state as unknown as SettingsState;
 }
