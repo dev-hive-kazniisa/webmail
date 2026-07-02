@@ -720,7 +720,11 @@
       "delete_table": "Odstranit tabulku",
       "pick_size": "Vybrat velikost"
     },
-    "send_filing_warning": "Odesláno - ale následný úklid selhal, může zůstat zastaralý koncept."
+    "send_filing_warning": "Odesláno - ale následný úklid selhal, může zůstat zastaralý koncept.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Potvrdit",

@@ -720,7 +720,11 @@
       "delete_table": "حذف جدول",
       "pick_size": "انتخاب اندازه"
     },
-    "send_filing_warning": "ارسال شد - اما پاک‌سازی پس از ارسال ناموفق بود، ممکن است پیش‌نویس قدیمی باقی بماند."
+    "send_filing_warning": "ارسال شد - اما پاک‌سازی پس از ارسال ناموفق بود، ممکن است پیش‌نویس قدیمی باقی بماند.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "تأیید",

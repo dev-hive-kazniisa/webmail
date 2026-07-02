@@ -720,7 +720,11 @@
       "delete_table": "Tabel verwijderen",
       "pick_size": "Grootte kiezen"
     },
-    "send_filing_warning": "Verzonden - maar het opruimen daarna is mislukt, mogelijk blijft een oud concept staan."
+    "send_filing_warning": "Verzonden - maar het opruimen daarna is mislukt, mogelijk blijft een oud concept staan.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Bevestigen",
