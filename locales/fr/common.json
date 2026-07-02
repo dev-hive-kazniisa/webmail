@@ -754,7 +754,11 @@
       "background_color": "Couleur d'arrière-plan",
       "remove_background_color": "Supprimer la couleur d'arrière-plan"
     },
-    "send_filing_warning": "Envoyé - mais le nettoyage après envoi a échoué, un ancien brouillon peut subsister."
+    "send_filing_warning": "Envoyé - mais le nettoyage après envoi a échoué, un ancien brouillon peut subsister.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmer",

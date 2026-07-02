@@ -754,7 +754,11 @@
       "background_color": "Color de fondo",
       "remove_background_color": "Quitar color de fondo"
     },
-    "send_filing_warning": "Enviado - pero la limpieza posterior falló, puede quedar un borrador obsoleto."
+    "send_filing_warning": "Enviado - pero la limpieza posterior falló, puede quedar un borrador obsoleto.",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore_size": "Restore size",
+    "close": "Close"
   },
   "confirm_dialog": {
     "confirm": "Confirmar",
