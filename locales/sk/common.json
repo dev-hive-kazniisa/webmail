@@ -754,7 +754,11 @@
       "background_color": "Farba pozadia",
       "remove_background_color": "Odstrániť farbu pozadia"
     },
-    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept."
+    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept.",
+    "minimize": "Minimalizovať",
+    "maximize": "Maximalizovať",
+    "restore_size": "Obnoviť veľkosť",
+    "close": "Zavrieť"
   },
   "confirm_dialog": {
     "confirm": "Potvrdiť",
