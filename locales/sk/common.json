@@ -720,7 +720,11 @@
       "delete_table": "Odstrániť tabuľku",
       "pick_size": "Vybrať veľkosť"
     },
-    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept."
+    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept.",
+    "minimize": "Minimalizovať",
+    "maximize": "Maximalizovať",
+    "restore_size": "Obnoviť veľkosť",
+    "close": "Zavrieť"
   },
   "confirm_dialog": {
     "confirm": "Potvrdiť",
