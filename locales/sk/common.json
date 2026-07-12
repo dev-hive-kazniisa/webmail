@@ -815,7 +815,7 @@
   "email_composer": {
     "select_from_directory": "Vybrať z adresára",
     "minimize": "Minimalizovať",
-    "maximize": "Celá obrazovka",
+    "maximize": "Maximalizovať",
     "restore": "Obnoviť",
     "new_message": "Nová správa",
     "signature_edit_hint": "Dvojklikom upravíte podpis",
@@ -1063,6 +1063,8 @@
     "send_guard_failed": "Neodoslané - doplnok, ktorý kontroluje správy pred odoslaním, zlyhal alebo neodpovedal.",
     "cut": "Vystrihnúť",
     "copy": "Kopírovať",
+    "restore_size": "Obnoviť veľkosť",
+    "close": "Zavrieť",
     "recipient_remove_named": "Odstrániť {name}",
     "recipient_chip_hint": "Delete príjemcu odstráni, Enter otvorí ďalšie možnosti",
     "recipient_move_to": "Presunúť do {field}",
