@@ -846,7 +846,11 @@
     "pop_out": "Otvoriť odpoveď v okne",
     "send_guard_failed": "Neodoslané - doplnok, ktorý kontroluje správy pred odoslaním, zlyhal alebo neodpovedal.",
     "cut": "Vystrihnúť",
-    "copy": "Kopírovať"
+    "copy": "Kopírovať",
+    "minimize": "Minimalizovať",
+    "maximize": "Maximalizovať",
+    "restore_size": "Obnoviť veľkosť",
+    "close": "Zavrieť"
   },
   "confirm_dialog": {
     "confirm": "Potvrdiť",

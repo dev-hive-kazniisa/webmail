@@ -811,7 +811,11 @@
     "pop_out": "פתיחת התשובה בחלון נפרד",
     "send_guard_failed": "לא נשלח - תוסף שבודק הודעות לפני השליחה נכשל או לא הגיב.",
     "cut": "גזור",
-    "copy": "העתק"
+    "copy": "העתק",
+    "minimize": "מזער",
+    "maximize": "הגדל",
+    "restore_size": "שחזר גודל",
+    "close": "סגור"
   },
   "confirm_dialog": {
     "confirm": "אשר",
