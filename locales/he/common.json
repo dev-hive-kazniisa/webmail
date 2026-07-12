@@ -651,8 +651,11 @@
     "recipient_name_placeholder": "שם תצוגה",
     "autocomplete_search_server": "חיפוש בשרת",
     "autocomplete_searching": "מחפש...",
-    "send_filing_warning": "נשלח - אך הניקוי שלאחר השליחה נכשל, ייתכן שתישאר טיוטה ישנה."
-  },
+    "send_filing_warning": "נשלח - אך הניקוי שלאחר השליחה נכשל, ייתכן שתישאר טיוטה ישנה.",
+    "minimize": "מזער",
+    "maximize": "הגדל",
+    "restore_size": "שחזר גודל",
+    "close": "סגור"  },
   "confirm_dialog": {
     "confirm": "אשר",
     "cancel": "לְבַטֵל"

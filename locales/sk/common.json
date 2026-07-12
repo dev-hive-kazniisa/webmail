@@ -686,8 +686,11 @@
     "recipient_name_placeholder": "Zobrazené meno",
     "autocomplete_search_server": "Hľadať na serveri",
     "autocomplete_searching": "Hľadanie...",
-    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept."
-  },
+    "send_filing_warning": "Odoslané - ale následné upratovanie zlyhalo, môže zostať zastaraný koncept.",
+    "minimize": "Minimalizovať",
+    "maximize": "Maximalizovať",
+    "restore_size": "Obnoviť veľkosť",
+    "close": "Zavrieť"  },
   "confirm_dialog": {
     "confirm": "Potvrdiť",
     "cancel": "Zrušiť"
