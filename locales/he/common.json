@@ -690,7 +690,11 @@
       "delete_table": "מחיקת טבלה",
       "pick_size": "בחירת גודל"
     },
-    "send_filing_warning": "נשלח - אך הניקוי שלאחר השליחה נכשל, ייתכן שתישאר טיוטה ישנה."
+    "send_filing_warning": "נשלח - אך הניקוי שלאחר השליחה נכשל, ייתכן שתישאר טיוטה ישנה.",
+    "minimize": "מזער",
+    "maximize": "הגדל",
+    "restore_size": "שחזר גודל",
+    "close": "סגור"
   },
   "confirm_dialog": {
     "confirm": "אשר",
