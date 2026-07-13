@@ -839,10 +839,12 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
       }
     },
     onCompose: () => {
-      startFreshComposerSession();
-      setComposerMode('compose');
-      setShowComposer(true);
-      if (isMobile) setActiveView('viewer');
+      guardComposerSession(() => {
+        startFreshComposerSession();
+        setComposerMode('compose');
+        setShowComposer(true);
+        if (isMobile) setActiveView('viewer');
+      });
     },
     onFocusSearch: () => {
       if (isScheduledView) return;
@@ -1968,6 +1970,25 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
     setPendingDraft(null);
   }, []);
 
+  // A fresh session must never silently destroy a live (possibly minimized)
+  // compose window: every entry point below remounts the composer via the
+  // session key and wipes its state. While a composer is mounted
+  // (requestCloseRef is set), route the new session through its dirty-aware
+  // close instead: a clean composer closes immediately; a dirty one shows the
+  // "Save draft?" dialog. The start rides along as the composer's own
+  // after-close follow-up, so it runs only once the close really resolves —
+  // cancelling the dialog (or a failed-save rescue) keeps the current draft
+  // and drops the queued session.
+  const guardComposerSession = useCallback((start: () => void | Promise<void>) => {
+    const requestClose = composerRequestCloseRef.current;
+    if (requestClose) {
+      setComposerMinimized(false); // surface the window so the dialog is visible
+      requestClose(() => { void start(); });
+      return;
+    }
+    void start();
+  }, []);
+
   // A new composer session always opens as a regular (non-minimized) window.
   useEffect(() => {
     setComposerMinimized(false);
@@ -1991,28 +2012,35 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   }, [pendingDraft, composerMode, selectedEmail, t]);
 
   const handleReply = async (draftText?: string) => {
-    if (selectedEmail) {
-      const formerSelected = { ...selectedEmail };
-      const enrichedEmail = await emailHooks.onBeforeComposeOpenToReply.transform(selectedEmail);
+    const email = selectedEmail;
+    if (email) {
+      const formerSelected = { ...email };
+      const enrichedEmail = await emailHooks.onBeforeComposeOpenToReply.transform(email);
       selectEmail(enrichedEmail);
       const ok = await emailHooks.onBeforeReply.intercept({
-        originalEmailId: selectedEmail.id,
-        originalEmail: emailToReadView(selectedEmail),
+        originalEmailId: email.id,
+        originalEmail: emailToReadView(email),
         mode: 'reply' as const,
       });
-      if (!ok){ 
+      if (!ok) {
         selectEmail(formerSelected);
         return;
       }
-      await prepareComposerQuoteHeader(selectedEmail, 'reply');
-    } else {
-      setComposerQuoteHeader(null);
     }
-    startFreshComposerSession();
-    setComposerDraftText(draftText || "");
-    setComposerMode('reply');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    // Quote prep happens inside the guarded start: onClose of a live composer
+    // resets composerQuoteHeader, so preparing it earlier would be wiped.
+    guardComposerSession(async () => {
+      if (email) {
+        await prepareComposerQuoteHeader(email, 'reply');
+      } else {
+        setComposerQuoteHeader(null);
+      }
+      startFreshComposerSession();
+      setComposerDraftText(draftText || "");
+      setComposerMode('reply');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   const handleEditDraft = async (email?: Email) => {
@@ -2057,49 +2085,52 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
       : identities;
     const matchedIdentityId = findDraftIdentityId(composerIdentities, draft.from?.[0]);
 
-    // Increment session ID to force the composer to remount with fresh state,
-    // even if it was already open (e.g. right-clicking a draft while composing).
-    setComposerSessionId(id => id + 1);
-    setPendingDraft({
-      to: draft.to?.map(a => a.email).filter(Boolean).join(', ') || '',
-      cc: draft.cc?.map(a => a.email).filter(Boolean).join(', ') || '',
-      bcc: draft.bcc?.map(a => a.email).filter(Boolean).join(', ') || '',
-      // Drafts saved before #1189 stored an empty subject as the composer's
-      // "(No Subject)" placeholder; reopen those with an empty field.
-      subject: draft.subject && draft.subject !== t('email_composer.no_subject') ? draft.subject : '',
-      body: htmlBody || bodyText,
-      // Re-open in the format the draft was written in: a text-only draft
-      // used to land raw in the rich-text editor (newlines collapsed) and an
-      // HTML draft raw in the plain-text textarea. Empty draft: the setting
-      // decides (#1022).
-      plainTextMode: htmlBody != null ? false : bodyText ? true : undefined,
-      showCc: (draft.cc?.length || 0) > 0,
-      showBcc: (draft.bcc?.length || 0) > 0,
-      selectedIdentityId: matchedIdentityId,
-      subAddressTag: '',
-      mode: 'compose',
-      draftId: draft.id,
-      // A reply draft re-opens in compose mode; its threading headers must
-      // come along or the reply leaves its thread.
-      inReplyTo: draft.inReplyTo ?? undefined,
-      references: draft.references ?? undefined,
-      // Existing server-side attachments must ride along, or the composer
-      // starts empty and the next save/send silently rebuilds the draft
-      // without them (#849).
-      attachments: (draft.attachments ?? [])
-        .filter(a => !!a.blobId)
-        .map(a => ({
-          blobId: a.blobId,
-          name: a.name,
-          type: a.type,
-          size: a.size,
-          cid: a.cid,
-          disposition: a.disposition,
-        })),
+    // Increment session ID to force the composer to remount with fresh state.
+    // If a composer is already open (e.g. right-clicking a draft while
+    // composing), the guard resolves its draft first instead of wiping it.
+    guardComposerSession(() => {
+      setComposerSessionId(id => id + 1);
+      setPendingDraft({
+        to: draft.to?.map(a => a.email).filter(Boolean).join(', ') || '',
+        cc: draft.cc?.map(a => a.email).filter(Boolean).join(', ') || '',
+        bcc: draft.bcc?.map(a => a.email).filter(Boolean).join(', ') || '',
+        // Drafts saved before #1189 stored an empty subject as the composer's
+        // "(No Subject)" placeholder; reopen those with an empty field.
+        subject: draft.subject && draft.subject !== t('email_composer.no_subject') ? draft.subject : '',
+        body: htmlBody || bodyText,
+        // Re-open in the format the draft was written in: a text-only draft
+        // used to land raw in the rich-text editor (newlines collapsed) and an
+        // HTML draft raw in the plain-text textarea. Empty draft: the setting
+        // decides (#1022).
+        plainTextMode: htmlBody != null ? false : bodyText ? true : undefined,
+        showCc: (draft.cc?.length || 0) > 0,
+        showBcc: (draft.bcc?.length || 0) > 0,
+        selectedIdentityId: matchedIdentityId,
+        subAddressTag: '',
+        mode: 'compose',
+        draftId: draft.id,
+        // A reply draft re-opens in compose mode; its threading headers must
+        // come along or the reply leaves its thread.
+        inReplyTo: draft.inReplyTo ?? undefined,
+        references: draft.references ?? undefined,
+        // Existing server-side attachments must ride along, or the composer
+        // starts empty and the next save/send silently rebuilds the draft
+        // without them (#849).
+        attachments: (draft.attachments ?? [])
+          .filter(a => !!a.blobId)
+          .map(a => ({
+            blobId: a.blobId,
+            name: a.name,
+            type: a.type,
+            size: a.size,
+            cid: a.cid,
+            disposition: a.disposition,
+          })),
+      });
+      setComposerMode('compose');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
     });
-    setComposerMode('compose');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
   };
 
   useEffect(() => {
@@ -2170,51 +2201,61 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   }, [cancelUndoSend, clearPendingUndoSend, client, fetchScheduledEmails, isScheduledView, pendingUndoSend?.submissionId, sendDelaySeconds, t]);
 
   const handleReplyAll = async () => {
-    if (selectedEmail) {
-      const formerSelected = { ...selectedEmail };
-      const enrichedEmail = await emailHooks.onBeforeComposeOpenToReplyAll.transform(selectedEmail);
+    const email = selectedEmail;
+    if (email) {
+      const formerSelected = { ...email };
+      const enrichedEmail = await emailHooks.onBeforeComposeOpenToReplyAll.transform(email);
       selectEmail(enrichedEmail);
       const ok = await emailHooks.onBeforeReplyAll.intercept({
-        originalEmailId: selectedEmail.id,
-        originalEmail: emailToReadView(selectedEmail),
+        originalEmailId: email.id,
+        originalEmail: emailToReadView(email),
         mode: 'reply-all' as const,
       });
       if (!ok) {
         selectEmail(formerSelected);
         return;
       }
-      await prepareComposerQuoteHeader(selectedEmail, 'replyAll');
-    } else {
-      setComposerQuoteHeader(null);
     }
-    startFreshComposerSession();
-    setComposerMode('replyAll');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    guardComposerSession(async () => {
+      if (email) {
+        await prepareComposerQuoteHeader(email, 'replyAll');
+      } else {
+        setComposerQuoteHeader(null);
+      }
+      startFreshComposerSession();
+      setComposerMode('replyAll');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   const handleForward = async () => {
-    if (selectedEmail) {
-      const formerSelected = { ...selectedEmail };
-      const enrichedEmail = await emailHooks.onBeforeComposeOpenToForward.transform(selectedEmail);
+    const email = selectedEmail;
+    if (email) {
+      const formerSelected = { ...email };
+      const enrichedEmail = await emailHooks.onBeforeComposeOpenToForward.transform(email);
       selectEmail(enrichedEmail);
       const ok = await emailHooks.onBeforeForward.intercept({
-        originalEmailId: selectedEmail.id,
-        originalEmail: emailToReadView(selectedEmail),
+        originalEmailId: email.id,
+        originalEmail: emailToReadView(email),
         mode: 'forward' as const,
       });
       if (!ok) {
         selectEmail(formerSelected);
         return;
       }
-      await prepareComposerQuoteHeader(selectedEmail, 'forward');
-    } else {
-      setComposerQuoteHeader(null);
     }
-    startFreshComposerSession();
-    setComposerMode('forward');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    guardComposerSession(async () => {
+      if (email) {
+        await prepareComposerQuoteHeader(email, 'forward');
+      } else {
+        setComposerQuoteHeader(null);
+      }
+      startFreshComposerSession();
+      setComposerMode('forward');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   // Forward the original message as a message/rfc822 attachment instead of
@@ -3645,31 +3686,37 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   const handleConversationReply = async (email: Email) => {
     email = await emailHooks.onBeforeComposeOpenToReply.transform(email);
     selectEmail(email);
-    await prepareComposerQuoteHeader(email, 'reply');
-    startFreshComposerSession();
-    setComposerMode('reply');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    guardComposerSession(async () => {
+      await prepareComposerQuoteHeader(email, 'reply');
+      startFreshComposerSession();
+      setComposerMode('reply');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   const handleConversationReplyAll = async (email: Email) => {
     email = await emailHooks.onBeforeComposeOpenToReplyAll.transform(email);
     selectEmail(email);
-    await prepareComposerQuoteHeader(email, 'replyAll');
-    startFreshComposerSession();
-    setComposerMode('replyAll');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    guardComposerSession(async () => {
+      await prepareComposerQuoteHeader(email, 'replyAll');
+      startFreshComposerSession();
+      setComposerMode('replyAll');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   const handleConversationForward = async (email: Email) => {
     email = await emailHooks.onBeforeComposeOpenToForward.transform(email);
     selectEmail(email);
-    await prepareComposerQuoteHeader(email, 'forward');
-    startFreshComposerSession();
-    setComposerMode('forward');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
+    guardComposerSession(async () => {
+      await prepareComposerQuoteHeader(email, 'forward');
+      startFreshComposerSession();
+      setComposerMode('forward');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+    });
   };
 
   const ToggleChip = ({ icon, label, value, onClick }: { icon: React.ReactNode; label: string; value: boolean | null; onClick: () => void }) => (
@@ -3817,13 +3864,15 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
               onImportEmail={handleImportEmailFromContextMenu}
               onRefreshMailboxes={handleRefreshMailboxes}
               onCompose={() => {
-                startFreshComposerSession();
-                setComposerMode('compose');
-                setShowComposer(true);
-                if (isMobile) {
-                  setSidebarOpen(false);
-                  setActiveView('viewer');
-                }
+                guardComposerSession(() => {
+                  startFreshComposerSession();
+                  setComposerMode('compose');
+                  setShowComposer(true);
+                  if (isMobile) {
+                    setSidebarOpen(false);
+                    setActiveView('viewer');
+                  }
+                });
               }}
               onSidebarClose={() => setSidebarOpen(false)}
               multiAccountMode={isEmbedded}
@@ -4312,10 +4361,12 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             {/* Floating Compose Button */}
             <Button
               onClick={() => {
-                startFreshComposerSession();
-                setComposerMode('compose');
-                setShowComposer(true);
-                if (isMobile) setActiveView('viewer');
+                guardComposerSession(() => {
+                  startFreshComposerSession();
+                  setComposerMode('compose');
+                  setShowComposer(true);
+                  if (isMobile) setActiveView('viewer');
+                });
               }}
               className={cn(
                 "absolute z-40 rounded-full shadow-lg",
@@ -4482,9 +4533,11 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                       }
                     }}
                     onCompose={() => {
-                      startFreshComposerSession();
-                      setComposerMode('compose');
-                      setShowComposer(true);
+                      guardComposerSession(() => {
+                        startFreshComposerSession();
+                        setComposerMode('compose');
+                        setShowComposer(true);
+                      });
                     }}
                     currentUserEmail={client?.getUsername()}
                     currentUserName={client?.getUsername()?.split("@")[0]}
