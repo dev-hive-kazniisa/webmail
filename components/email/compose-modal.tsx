@@ -1,6 +1,6 @@
 "use client";
 
-import { Maximize2, Minimize2, Minus, PenLine, X } from "lucide-react";
+import { Loader2, Maximize2, Minimize2, Minus, PenLine, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
@@ -11,6 +11,12 @@ interface ComposeModalProps {
   maximized: boolean;
   /** Window title: reply/forward subject or the localized "New message". */
   title: string;
+  /**
+   * Number of attachments still uploading in the hosted composer. When > 0
+   * the minimized bar swaps its icon for a spinner and shows an "uploading
+   * attachments" hint, so background uploads stay visible while minimized.
+   */
+  uploadingCount?: number;
   onMinimize: () => void;
   onRestore: () => void;
   onToggleMaximize: () => void;
@@ -31,6 +37,7 @@ export function ComposeModal({
   minimized,
   maximized,
   title,
+  uploadingCount = 0,
   onMinimize,
   onRestore,
   onToggleMaximize,
@@ -122,9 +129,25 @@ export function ComposeModal({
             type="button"
             onClick={onRestore}
             className="flex items-center gap-2 pl-3 pr-1 py-2 hover:bg-accent rounded-l-lg min-w-0"
+            title={uploadingCount > 0 ? t("uploading_attachments") : undefined}
           >
-            <PenLine className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-sm max-w-[200px] truncate">{title}</span>
+            {uploadingCount > 0 ? (
+              <Loader2
+                className="w-4 h-4 text-primary shrink-0 animate-spin"
+                data-testid="compose-minimized-uploading"
+                aria-hidden
+              />
+            ) : (
+              <PenLine className="w-4 h-4 text-primary shrink-0" />
+            )}
+            <span className="min-w-0 flex flex-col items-start">
+              <span className="text-sm max-w-[200px] truncate">{title}</span>
+              {uploadingCount > 0 && (
+                <span className="text-xs text-muted-foreground max-w-[200px] truncate">
+                  {t("uploading_attachments")}
+                </span>
+              )}
+            </span>
           </button>
           <button
             type="button"

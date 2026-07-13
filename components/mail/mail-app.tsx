@@ -218,6 +218,9 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   const [composerPrefill, setComposerPrefill] = useState<ComposePrefill | null>(null);
   const [composerMinimized, setComposerMinimized] = useState(false);
   const [composerMaximized, setComposerMaximized] = useState(false);
+  // In-flight attachment uploads of the live composer (spinner in the
+  // minimized modal bar); reported by EmailComposer, reset per session.
+  const [composerUploadingCount, setComposerUploadingCount] = useState(0);
   // Plugin-resolved quote header for the next reply/forward composer open.
   // Cleared on close so a subsequent "compose new" doesn't reuse stale state.
   const [composerQuoteHeader, setComposerQuoteHeader] = useState<QuoteHeader | null>(null);
@@ -2288,6 +2291,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   useEffect(() => {
     setComposerMinimized(false);
     setComposerMaximized(false);
+    setComposerUploadingCount(0);
   }, [composerSessionId]);
 
   // Title for the modal window / minimized bar. Static per session (doesn't
@@ -4549,6 +4553,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
           }
         }}
         requestCloseRef={composerRequestCloseRef}
+        onAttachmentUploadStateChange={setComposerUploadingCount}
         onDiscardDraft={(draftId) => {
           handleDiscardDraft(draftId);
           setPendingDraft(null);
@@ -5468,6 +5473,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             minimized={composerMinimized}
             maximized={composerMaximized}
             title={composerModalTitle}
+            uploadingCount={composerUploadingCount}
             onMinimize={() => setComposerMinimized(true)}
             onRestore={() => setComposerMinimized(false)}
             onToggleMaximize={() => setComposerMaximized((m) => !m)}
