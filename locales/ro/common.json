@@ -690,7 +690,9 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"  },
+    "close": "Close",
+    "uploading_attachments": "Se încarcă atașamentele…"
+  },
   "confirm_dialog": {
     "confirm": "Confirmare",
     "cancel": "Anulează"

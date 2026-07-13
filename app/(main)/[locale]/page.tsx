@@ -96,6 +96,9 @@ export default function Home() {
   const [composerSessionId, setComposerSessionId] = useState(0);
   const [composerMinimized, setComposerMinimized] = useState(false);
   const [composerMaximized, setComposerMaximized] = useState(false);
+  // In-flight attachment uploads of the live composer (spinner in the
+  // minimized modal bar); reported by EmailComposer, reset per session.
+  const [composerUploadingCount, setComposerUploadingCount] = useState(0);
   const composerRequestCloseRef = useRef<(() => void) | null>(null);
   // Session start deferred by guardComposerSession until the live composer
   // resolves its dirty-aware close; cleared when the user cancels the dialog.
@@ -1389,6 +1392,7 @@ export default function Home() {
   useEffect(() => {
     setComposerMinimized(false);
     setComposerMaximized(false);
+    setComposerUploadingCount(0);
   }, [composerSessionId]);
 
   // Title for the modal window / minimized bar. Static per session (doesn't
@@ -3535,6 +3539,7 @@ export default function Home() {
             minimized={composerMinimized}
             maximized={composerMaximized}
             title={composerModalTitle}
+            uploadingCount={composerUploadingCount}
             onMinimize={() => setComposerMinimized(true)}
             onRestore={() => setComposerMinimized(false)}
             onToggleMaximize={() => setComposerMaximized((m) => !m)}
@@ -3619,6 +3624,7 @@ export default function Home() {
                   // User kept the current draft — drop the queued session.
                   pendingComposerStartRef.current = null;
                 }}
+                onAttachmentUploadStateChange={setComposerUploadingCount}
                 onDiscardDraft={(draftId) => {
                   handleDiscardDraft(draftId);
                   setPendingDraft(null);

@@ -690,7 +690,9 @@
     "minimize": "Свернуть",
     "maximize": "Развернуть",
     "restore_size": "Восстановить размер",
-    "close": "Закрыть"  },
+    "close": "Закрыть",
+    "uploading_attachments": "Загрузка вложений…"
+  },
   "confirm_dialog": {
     "confirm": "Подтвердить",
     "cancel": "Отмена"

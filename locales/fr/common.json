@@ -690,7 +690,9 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"  },
+    "close": "Close",
+    "uploading_attachments": "Envoi des pièces jointes…"
+  },
   "confirm_dialog": {
     "confirm": "Confirmer",
     "cancel": "Annuler"

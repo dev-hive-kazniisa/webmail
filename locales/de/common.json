@@ -690,7 +690,9 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"  },
+    "close": "Close",
+    "uploading_attachments": "Anhänge werden hochgeladen…"
+  },
   "confirm_dialog": {
     "confirm": "Bestätigen",
     "cancel": "Abbrechen"

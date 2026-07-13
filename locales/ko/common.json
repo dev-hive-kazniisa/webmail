@@ -690,7 +690,9 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"  },
+    "close": "Close",
+    "uploading_attachments": "첨부 파일 업로드 중…"
+  },
   "confirm_dialog": {
     "confirm": "확인",
     "cancel": "취소"
