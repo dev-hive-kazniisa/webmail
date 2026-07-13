@@ -91,4 +91,37 @@ describe('ComposeModal', () => {
     fireEvent.click(screen.getByTestId('compose-window-close'));
     expect(props.onRequestClose).toHaveBeenCalledOnce();
   });
+
+  it('traps initial focus inside the window when open', () => {
+    renderModal();
+    // useFocusTrap focuses the first focusable element (the minimize control).
+    expect(screen.getByLabelText('minimize')).toHaveFocus();
+  });
+
+  it('Tab from the last focusable element wraps back to the first', () => {
+    const props = {
+      minimized: false,
+      maximized: false,
+      title: 'Test subject',
+      onMinimize: vi.fn(),
+      onRestore: vi.fn(),
+      onToggleMaximize: vi.fn(),
+      onRequestClose: vi.fn(),
+    };
+    render(
+      <ComposeModal {...props}>
+        <button data-testid="last-in-panel">send</button>
+      </ComposeModal>
+    );
+    const first = screen.getByLabelText('minimize');
+    const last = screen.getByTestId('last-in-panel');
+    last.focus();
+    fireEvent.keyDown(last, { key: 'Tab' });
+    expect(first).toHaveFocus();
+  });
+
+  it('does not hold focus while minimized', () => {
+    renderModal({ minimized: true });
+    expect(screen.getByLabelText('minimize')).not.toHaveFocus();
+  });
 });
