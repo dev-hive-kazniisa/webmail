@@ -724,7 +724,8 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"
+    "close": "Close",
+    "uploading_attachments": "正在上传附件…"
   },
   "confirm_dialog": {
     "confirm": "确认",

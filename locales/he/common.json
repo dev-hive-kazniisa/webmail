@@ -689,7 +689,8 @@
     "minimize": "מזער",
     "maximize": "הגדל",
     "restore_size": "שחזר גודל",
-    "close": "סגור"
+    "close": "סגור",
+    "uploading_attachments": "מעלה קבצים מצורפים…"
   },
   "confirm_dialog": {
     "confirm": "אשר",
