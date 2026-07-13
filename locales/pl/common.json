@@ -729,7 +729,8 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"
+    "close": "Close",
+    "uploading_attachments": "Przesyłanie załączników…"
   },
   "confirm_dialog": {
     "confirm": "Potwierdź",

@@ -124,4 +124,19 @@ describe('ComposeModal', () => {
     renderModal({ minimized: true });
     expect(screen.getByLabelText('minimize')).not.toHaveFocus();
   });
+
+  it('minimized bar shows an upload spinner and hint while uploads are in flight', () => {
+    renderModal({ minimized: true, uploadingCount: 2 });
+    expect(screen.getByTestId('compose-minimized-uploading')).toBeInTheDocument();
+    // t() is mocked to return the bare key.
+    expect(screen.getByText('uploading_attachments')).toBeInTheDocument();
+    // Title still visible next to the hint.
+    expect(screen.getByText('Test subject')).toBeInTheDocument();
+  });
+
+  it('minimized bar shows the normal icon when nothing is uploading', () => {
+    renderModal({ minimized: true, uploadingCount: 0 });
+    expect(screen.queryByTestId('compose-minimized-uploading')).not.toBeInTheDocument();
+    expect(screen.queryByText('uploading_attachments')).not.toBeInTheDocument();
+  });
 });

@@ -729,7 +729,8 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"
+    "close": "Close",
+    "uploading_attachments": "添付ファイルをアップロード中…"
   },
   "confirm_dialog": {
     "confirm": "確認",
