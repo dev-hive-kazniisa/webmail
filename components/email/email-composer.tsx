@@ -157,6 +157,12 @@ interface EmailComposerProps {
    * request through the same guard instead of discarding silently.
    */
   requestCloseRef?: React.MutableRefObject<(() => void) | null>;
+  /**
+   * Called when the user cancels the close dialog (keeps the draft open).
+   * Lets the host drop any action it queued behind the dirty-aware close
+   * (e.g. a new composer session waiting for this one to resolve).
+   */
+  onCloseCancelled?: () => void;
   onDiscardDraft?: (draftId: string) => void;
   onSaveState?: (data: ComposerDraftData) => void;
   className?: string;
@@ -263,6 +269,7 @@ export function EmailComposer({
   onScheduledSendCreated,
   onClose,
   requestCloseRef,
+  onCloseCancelled,
   onDiscardDraft,
   onSaveState,
   className,
@@ -572,9 +579,16 @@ export function EmailComposer({
     restoreFocus: true,
   });
 
+  // All close-dialog cancel paths (Escape, backdrop, Cancel button) must
+  // notify the host so it can drop any session start queued behind the close.
+  const cancelCloseDialog = () => {
+    setShowCloseDialog(false);
+    onCloseCancelled?.();
+  };
+
   const closeDialogRef = useFocusTrap({
     isActive: showCloseDialog,
-    onEscape: () => setShowCloseDialog(false),
+    onEscape: cancelCloseDialog,
     restoreFocus: true,
   });
 
@@ -3032,7 +3046,7 @@ export function EmailComposer({
       {showCloseDialog && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center z-[60] p-4 animate-in fade-in duration-150"
-          onClick={() => setShowCloseDialog(false)}
+          onClick={cancelCloseDialog}
         >
           <div
             ref={closeDialogRef}
@@ -3046,7 +3060,7 @@ export function EmailComposer({
               <p className="mt-2 text-sm text-muted-foreground">{t('close_draft_message')}</p>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 pb-6">
-              <Button variant="outline" onClick={() => setShowCloseDialog(false)}>
+              <Button variant="outline" onClick={cancelCloseDialog}>
                 {t('cancel')}
               </Button>
               <Button variant="destructive" onClick={handleDiscardAndClose}>
