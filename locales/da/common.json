@@ -1359,7 +1359,8 @@
       "skip": "Spring over",
       "edit": "Rediger billedbeskrivelse",
       "plain_text": "[Billede: {alt}]"
-    }
+    },
+    "uploading_attachments": "Uploader vedhæftede filer…"
   },
   "upload_rate_limit": {
     "retry_in": "For mange uploads. Prøv igen om {minutes, plural, one {# minut} other {# minutter}}.",

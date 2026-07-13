@@ -1359,7 +1359,8 @@
       "skip": "Omiteți",
       "edit": "Editați descrierea imaginii",
       "plain_text": "[Imagine: {alt}]"
-    }
+    },
+    "uploading_attachments": "Se încarcă atașamentele…"
   },
   "upload_rate_limit": {
     "retry_in": "Prea multe încărcări. Încercați din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",

@@ -1303,7 +1303,8 @@
       "skip": "דילוג",
       "edit": "עריכת תיאור התמונה",
       "plain_text": "[תמונה: {alt}]"
-    }
+    },
+    "uploading_attachments": "מעלה קבצים מצורפים…"
   },
   "upload_rate_limit": {
     "retry_in": "יותר מדי העלאות. נסו שוב בעוד {minutes, plural, one {דקה אחת} two {שתי דקות} other {# דקות}}.",

@@ -1359,7 +1359,8 @@
       "skip": "Pular",
       "edit": "Editar descrição da imagem",
       "plain_text": "[Imagem: {alt}]"
-    }
+    },
+    "uploading_attachments": "Enviando anexos…"
   },
   "upload_rate_limit": {
     "retry_in": "Demasiados carregamentos. Tente novamente dentro de {minutes, plural, one {# minuto} other {# minutos}}.",

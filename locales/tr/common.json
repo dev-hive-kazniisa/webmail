@@ -1359,7 +1359,8 @@
       "skip": "Atla",
       "edit": "Görsel açıklamasını düzenle",
       "plain_text": "[Görsel: {alt}]"
-    }
+    },
+    "uploading_attachments": "Ekler yükleniyor…"
   },
   "upload_rate_limit": {
     "retry_in": "Çok fazla yükleme. {minutes, plural, one {# dakika} other {# dakika}} sonra yeniden deneyin.",

@@ -1359,7 +1359,8 @@
       "skip": "Omitir",
       "edit": "Editar descripción de la imagen",
       "plain_text": "[Imagen: {alt}]"
-    }
+    },
+    "uploading_attachments": "Subiendo adjuntos…"
   },
   "upload_rate_limit": {
     "retry_in": "Demasiadas subidas. Inténtalo de nuevo en {minutes, plural, one {# minuto} other {# minutos}}.",

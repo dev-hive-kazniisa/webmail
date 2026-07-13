@@ -1359,7 +1359,8 @@
       "skip": "Izlaist",
       "edit": "Rediģēt attēla aprakstu",
       "plain_text": "[Attēls: {alt}]"
-    }
+    },
+    "uploading_attachments": "Notiek pielikumu augšupielāde…"
   },
   "upload_rate_limit": {
     "retry_in": "Pārāk daudz augšupielāžu. Mēģiniet vēlreiz pēc {minutes, plural, zero {# minūtēm} one {# minūtes} other {# minūtēm}}.",

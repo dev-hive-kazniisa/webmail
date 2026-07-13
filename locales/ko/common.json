@@ -1359,7 +1359,8 @@
       "skip": "건너뛰기",
       "edit": "이미지 설명 편집",
       "plain_text": "[이미지: {alt}]"
-    }
+    },
+    "uploading_attachments": "첨부 파일 업로드 중…"
   },
   "upload_rate_limit": {
     "retry_in": "업로드가 너무 많습니다. {minutes, plural, other {#분}} 후에 다시 시도하세요.",

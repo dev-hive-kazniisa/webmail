@@ -1359,7 +1359,8 @@
       "skip": "跳过",
       "edit": "编辑图片描述",
       "plain_text": "[图片：{alt}]"
-    }
+    },
+    "uploading_attachments": "正在上传附件…"
   },
   "upload_rate_limit": {
     "retry_in": "上传次数过多。请在 {minutes, plural, other {# 分钟}}后重试。",

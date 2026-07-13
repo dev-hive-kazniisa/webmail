@@ -1359,7 +1359,8 @@
       "skip": "Přeskočit",
       "edit": "Upravit popis obrázku",
       "plain_text": "[Obrázek: {alt}]"
-    }
+    },
+    "uploading_attachments": "Nahrávání příloh…"
   },
   "upload_rate_limit": {
     "retry_in": "Příliš mnoho nahrávání. Zkuste to znovu za {minutes, plural, one {# minutu} few {# minuty} many {# minuty} other {# minut}}.",

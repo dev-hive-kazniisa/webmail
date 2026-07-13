@@ -1359,7 +1359,8 @@
       "skip": "Pomiń",
       "edit": "Edytuj opis obrazu",
       "plain_text": "[Obraz: {alt}]"
-    }
+    },
+    "uploading_attachments": "Przesyłanie załączników…"
   },
   "upload_rate_limit": {
     "retry_in": "Zbyt wiele przesłanych plików. Spróbuj ponownie za {minutes, plural, one {# minutę} few {# minuty} many {# minut} other {# minuty}}.",

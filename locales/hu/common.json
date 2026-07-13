@@ -1359,7 +1359,8 @@
       "skip": "Kihagyás",
       "edit": "Képleírás szerkesztése",
       "plain_text": "[Kép: {alt}]"
-    }
+    },
+    "uploading_attachments": "Mellékletek feltöltése…"
   },
   "upload_rate_limit": {
     "retry_in": "Túl sok feltöltés. Próbálja újra {minutes, plural, one {# perc} other {# perc}} múlva.",
