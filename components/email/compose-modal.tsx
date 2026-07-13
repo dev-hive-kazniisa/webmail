@@ -3,6 +3,7 @@
 import { Maximize2, Minimize2, Minus, PenLine, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
 
 interface ComposeModalProps {
@@ -38,6 +39,13 @@ export function ComposeModal({
 }: ComposeModalProps) {
   const t = useTranslations("email_composer");
 
+  // Keep keyboard focus inside the window while it is open (aria-modal alone
+  // doesn't stop Tab from reaching the inert backgrounded app); restore it to
+  // the invoking element on minimize/close. Escape is intentionally NOT
+  // handled here — the composer's own keydown handler runs the dirty-aware
+  // close, and its inner dialogs handle their own Escape.
+  const panelRef = useFocusTrap({ isActive: !minimized });
+
   return (
     <>
       <div
@@ -56,6 +64,7 @@ export function ComposeModal({
           data-testid="compose-modal-backdrop"
         />
         <div
+          ref={panelRef}
           className={cn(
             "absolute flex flex-col bg-background overflow-hidden",
             "max-md:inset-0",
