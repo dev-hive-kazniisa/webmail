@@ -1284,7 +1284,8 @@
       "skip": "Kihagyás",
       "edit": "Képleírás szerkesztése",
       "plain_text": "[Kép: {alt}]"
-    }
+    },
+    "uploading_attachments": "Mellékletek feltöltése…"
   },
   "compose_ux": {
     "draft_discarded": "Piszkozat elvetve",

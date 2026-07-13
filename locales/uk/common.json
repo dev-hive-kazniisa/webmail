@@ -1284,7 +1284,8 @@
       "skip": "Пропустити",
       "edit": "Змінити опис зображення",
       "plain_text": "[Зображення: {alt}]"
-    }
+    },
+    "uploading_attachments": "Завантаження вкладень…"
   },
   "compose_ux": {
     "draft_discarded": "Чернетку видалено",

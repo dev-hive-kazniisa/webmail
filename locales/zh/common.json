@@ -1284,7 +1284,8 @@
       "skip": "跳过",
       "edit": "编辑图片描述",
       "plain_text": "[图片：{alt}]"
-    }
+    },
+    "uploading_attachments": "正在上传附件…"
   },
   "compose_ux": {
     "draft_discarded": "草稿已舍弃",

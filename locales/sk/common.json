@@ -1284,7 +1284,8 @@
       "skip": "Preskočiť",
       "edit": "Upraviť popis obrázka",
       "plain_text": "[Obrázok: {alt}]"
-    }
+    },
+    "uploading_attachments": "Nahrávanie príloh…"
   },
   "compose_ux": {
     "draft_discarded": "Koncept zahodený",

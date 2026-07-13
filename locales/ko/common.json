@@ -1284,7 +1284,8 @@
       "skip": "건너뛰기",
       "edit": "이미지 설명 편집",
       "plain_text": "[이미지: {alt}]"
-    }
+    },
+    "uploading_attachments": "첨부 파일 업로드 중…"
   },
   "compose_ux": {
     "draft_discarded": "임시 보관 메일을 삭제했습니다",

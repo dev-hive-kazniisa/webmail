@@ -1228,7 +1228,8 @@
       "skip": "דילוג",
       "edit": "עריכת תיאור התמונה",
       "plain_text": "[תמונה: {alt}]"
-    }
+    },
+    "uploading_attachments": "מעלה קבצים מצורפים…"
   },
   "compose_ux": {
     "draft_discarded": "הטיוטה נמחקה",

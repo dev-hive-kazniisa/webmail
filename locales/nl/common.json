@@ -1284,7 +1284,8 @@
       "skip": "Overslaan",
       "edit": "Beschrijving van de afbeelding bewerken",
       "plain_text": "[Afbeelding: {alt}]"
-    }
+    },
+    "uploading_attachments": "Bijlagen uploaden…"
   },
   "compose_ux": {
     "draft_discarded": "Concept verwijderd",

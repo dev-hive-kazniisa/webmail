@@ -1284,7 +1284,8 @@
       "skip": "Omiteți",
       "edit": "Editați descrierea imaginii",
       "plain_text": "[Imagine: {alt}]"
-    }
+    },
+    "uploading_attachments": "Se încarcă atașamentele…"
   },
   "compose_ux": {
     "draft_discarded": "Ciornă renunțată",

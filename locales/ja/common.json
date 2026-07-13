@@ -1284,7 +1284,8 @@
       "skip": "スキップ",
       "edit": "画像の説明を編集",
       "plain_text": "[画像: {alt}]"
-    }
+    },
+    "uploading_attachments": "添付ファイルをアップロード中…"
   },
   "compose_ux": {
     "draft_discarded": "下書きを破棄しました",

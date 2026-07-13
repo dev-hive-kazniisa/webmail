@@ -1284,7 +1284,8 @@
       "skip": "Přeskočit",
       "edit": "Upravit popis obrázku",
       "plain_text": "[Obrázek: {alt}]"
-    }
+    },
+    "uploading_attachments": "Nahrávání příloh…"
   },
   "compose_ux": {
     "draft_discarded": "Koncept zahozen",

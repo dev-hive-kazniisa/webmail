@@ -1284,7 +1284,8 @@
       "skip": "Spring over",
       "edit": "Rediger billedbeskrivelse",
       "plain_text": "[Billede: {alt}]"
-    }
+    },
+    "uploading_attachments": "Uploader vedhæftede filer…"
   },
   "compose_ux": {
     "draft_discarded": "Kladde kasseret",

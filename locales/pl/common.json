@@ -1284,7 +1284,8 @@
       "skip": "Pomiń",
       "edit": "Edytuj opis obrazu",
       "plain_text": "[Obraz: {alt}]"
-    }
+    },
+    "uploading_attachments": "Przesyłanie załączników…"
   },
   "compose_ux": {
     "draft_discarded": "Wersja robocza odrzucona",

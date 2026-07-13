@@ -1284,7 +1284,8 @@
       "skip": "Atla",
       "edit": "Görsel açıklamasını düzenle",
       "plain_text": "[Görsel: {alt}]"
-    }
+    },
+    "uploading_attachments": "Ekler yükleniyor…"
   },
   "compose_ux": {
     "draft_discarded": "Taslak silindi",

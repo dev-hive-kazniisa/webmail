@@ -1284,7 +1284,8 @@
       "skip": "Überspringen",
       "edit": "Bildbeschreibung bearbeiten",
       "plain_text": "[Bild: {alt}]"
-    }
+    },
+    "uploading_attachments": "Anhänge werden hochgeladen…"
   },
   "compose_ux": {
     "draft_discarded": "Entwurf verworfen",
