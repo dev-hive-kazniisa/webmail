@@ -724,7 +724,8 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore_size": "Restore size",
-    "close": "Close"
+    "close": "Close",
+    "uploading_attachments": "Ekler yükleniyor…"
   },
   "confirm_dialog": {
     "confirm": "Onayla",

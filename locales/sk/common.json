@@ -724,7 +724,8 @@
     "minimize": "Minimalizovať",
     "maximize": "Maximalizovať",
     "restore_size": "Obnoviť veľkosť",
-    "close": "Zavrieť"
+    "close": "Zavrieť",
+    "uploading_attachments": "Nahrávanie príloh…"
   },
   "confirm_dialog": {
     "confirm": "Potvrdiť",
