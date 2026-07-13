@@ -1090,7 +1090,8 @@
       "skip": "Atla",
       "edit": "Görsel açıklamasını düzenle",
       "plain_text": "[Görsel: {alt}]"
-    }
+    },
+    "uploading_attachments": "Ekler yükleniyor…"
   },
   "confirm_dialog": {
     "confirm": "Onayla",

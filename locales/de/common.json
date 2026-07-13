@@ -1090,7 +1090,8 @@
       "skip": "Überspringen",
       "edit": "Bildbeschreibung bearbeiten",
       "plain_text": "[Bild: {alt}]"
-    }
+    },
+    "uploading_attachments": "Anhänge werden hochgeladen…"
   },
   "confirm_dialog": {
     "confirm": "Bestätigen",

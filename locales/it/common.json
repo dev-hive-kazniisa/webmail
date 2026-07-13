@@ -1090,7 +1090,8 @@
       "skip": "Salta",
       "edit": "Modifica descrizione dell'immagine",
       "plain_text": "[Immagine: {alt}]"
-    }
+    },
+    "uploading_attachments": "Caricamento allegati…"
   },
   "confirm_dialog": {
     "confirm": "Conferma",

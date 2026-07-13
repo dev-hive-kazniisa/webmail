@@ -1090,7 +1090,8 @@
       "skip": "Izlaist",
       "edit": "Rediģēt attēla aprakstu",
       "plain_text": "[Attēls: {alt}]"
-    }
+    },
+    "uploading_attachments": "Notiek pielikumu augšupielāde…"
   },
   "confirm_dialog": {
     "confirm": "Apstiprināt",

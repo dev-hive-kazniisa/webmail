@@ -1090,7 +1090,8 @@
       "skip": "Preskočiť",
       "edit": "Upraviť popis obrázka",
       "plain_text": "[Obrázok: {alt}]"
-    }
+    },
+    "uploading_attachments": "Nahrávanie príloh…"
   },
   "confirm_dialog": {
     "confirm": "Potvrdiť",

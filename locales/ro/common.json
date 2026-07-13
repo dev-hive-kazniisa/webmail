@@ -1090,7 +1090,8 @@
       "skip": "Omiteți",
       "edit": "Editați descrierea imaginii",
       "plain_text": "[Imagine: {alt}]"
-    }
+    },
+    "uploading_attachments": "Se încarcă atașamentele…"
   },
   "confirm_dialog": {
     "confirm": "Confirmare",

@@ -1090,7 +1090,8 @@
       "skip": "Passer",
       "edit": "Modifier la description de l'image",
       "plain_text": "[Image : {alt}]"
-    }
+    },
+    "uploading_attachments": "Envoi des pièces jointes…"
   },
   "confirm_dialog": {
     "confirm": "Confirmer",

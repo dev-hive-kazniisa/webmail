@@ -818,6 +818,7 @@
     "maximize": "Maximize",
     "restore_size": "Restore size",
     "close": "Close",
+    "uploading_attachments": "Uploading attachments…",
     "restore": "Restore",
     "new_message": "New message",
     "signature_edit_hint": "Double-click to edit the signature",

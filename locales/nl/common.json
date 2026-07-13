@@ -1090,7 +1090,8 @@
       "skip": "Overslaan",
       "edit": "Beschrijving van de afbeelding bewerken",
       "plain_text": "[Afbeelding: {alt}]"
-    }
+    },
+    "uploading_attachments": "Bijlagen uploaden…"
   },
   "confirm_dialog": {
     "confirm": "Bevestigen",
