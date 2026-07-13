@@ -1190,7 +1190,8 @@
       "skip": "Přeskočit",
       "edit": "Upravit popis obrázku",
       "plain_text": "[Obrázek: {alt}]"
-    }
+    },
+    "uploading_attachments": "Nahrávání příloh…"
   },
   "confirm_dialog": {
     "confirm": "Potvrdit",

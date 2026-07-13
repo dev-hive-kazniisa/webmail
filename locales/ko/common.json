@@ -1190,7 +1190,8 @@
       "skip": "건너뛰기",
       "edit": "이미지 설명 편집",
       "plain_text": "[이미지: {alt}]"
-    }
+    },
+    "uploading_attachments": "첨부 파일 업로드 중…"
   },
   "confirm_dialog": {
     "confirm": "확인",

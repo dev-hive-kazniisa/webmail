@@ -1190,7 +1190,8 @@
       "skip": "Spring over",
       "edit": "Rediger billedbeskrivelse",
       "plain_text": "[Billede: {alt}]"
-    }
+    },
+    "uploading_attachments": "Uploader vedhæftede filer…"
   },
   "confirm_dialog": {
     "confirm": "Bekræft",

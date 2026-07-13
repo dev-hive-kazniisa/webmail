@@ -337,6 +337,12 @@ interface EmailComposerProps {
    */
   requestCloseRef?: React.MutableRefObject<((afterClose?: () => void) => void) | null>;
   /**
+   * Reports how many attachments are still uploading whenever that number
+   * changes. Lets the host surface an upload indicator while the composer
+   * itself is hidden (e.g. the minimized compose-modal bar).
+   */
+  onAttachmentUploadStateChange?: (uploadingCount: number) => void;
+  /**
    * `accountId`: the account the draft lives in, when not the own one (see
    * ComposerDraftData.draftAccountId). `localAccountId`: the login it was
    * saved through, as for onSend.
@@ -487,6 +493,7 @@ export function EmailComposer({
   onScheduledSendCreated,
   onClose,
   requestCloseRef,
+  onAttachmentUploadStateChange,
   onDiscardDraft,
   onSaveState,
   className,
@@ -3404,6 +3411,12 @@ export function EmailComposer({
   useEffect(() => {
     attachmentsRef.current = attachments;
   }, [attachments]);
+  // Report the in-flight upload count to the host (drives the spinner in the
+  // minimized compose-modal bar). Same-value re-calls are cheap: the host
+  // stores it in state and React bails out on identical values.
+  useEffect(() => {
+    onAttachmentUploadStateChange?.(attachments.filter(att => att.uploading).length);
+  }, [attachments, onAttachmentUploadStateChange]);
   const [isWaitingForUploads, setIsWaitingForUploads] = useState(false);
   const sendCancelledRef = useRef(false);
   // The user confirmed sending without a subject for this message.

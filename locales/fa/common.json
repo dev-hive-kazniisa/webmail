@@ -1190,7 +1190,8 @@
       "skip": "رد شدن",
       "edit": "ویرایش توضیح تصویر",
       "plain_text": "[تصویر: {alt}]"
-    }
+    },
+    "uploading_attachments": "در حال بارگذاری پیوست‌ها…"
   },
   "confirm_dialog": {
     "confirm": "تأیید",

@@ -1190,7 +1190,8 @@
       "skip": "Pomiń",
       "edit": "Edytuj opis obrazu",
       "plain_text": "[Obraz: {alt}]"
-    }
+    },
+    "uploading_attachments": "Przesyłanie załączników…"
   },
   "confirm_dialog": {
     "confirm": "Potwierdź",

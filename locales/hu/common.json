@@ -1190,7 +1190,8 @@
       "skip": "Kihagyás",
       "edit": "Képleírás szerkesztése",
       "plain_text": "[Kép: {alt}]"
-    }
+    },
+    "uploading_attachments": "Mellékletek feltöltése…"
   },
   "confirm_dialog": {
     "confirm": "Megerősítés",
