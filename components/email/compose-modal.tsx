@@ -86,7 +86,7 @@ export function ComposeModal({
               close is the rightmost/outermost, standard window-control order.
               Close routes through the composer's dirty-aware guard, same as
               the composer's own header X. */}
-          <div className="absolute right-3 top-3 z-10 hidden md:flex items-center gap-1">
+          <div className="absolute end-3 top-3 z-10 hidden md:flex items-center gap-1">
             <Button
               variant="ghost"
               size="icon"
@@ -124,11 +124,11 @@ export function ComposeModal({
       </div>
 
       {minimized && (
-        <div className="fixed right-4 bottom-20 md:bottom-4 z-40 flex items-center rounded-lg border border-border bg-background shadow-lg">
+        <div className="fixed end-4 bottom-20 md:bottom-4 z-40 flex items-center rounded-lg border border-border bg-background shadow-lg">
           <button
             type="button"
             onClick={onRestore}
-            className="flex items-center gap-2 pl-3 pr-1 py-2 hover:bg-accent rounded-l-lg min-w-0"
+            className="flex items-center gap-2 ps-3 pe-1 py-2 hover:bg-accent rounded-s-lg min-w-0"
             title={uploadingCount > 0 ? t("uploading_attachments") : undefined}
           >
             {uploadingCount > 0 ? (
@@ -152,7 +152,7 @@ export function ComposeModal({
           <button
             type="button"
             onClick={onRequestClose}
-            className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-r-lg"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-e-lg"
             aria-label={t("close")}
             title={t("close")}
             data-testid="compose-minimized-close"
