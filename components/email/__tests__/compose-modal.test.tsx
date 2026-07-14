@@ -80,7 +80,8 @@ describe('ComposeModal', () => {
     const close = screen.getByTestId('compose-window-close');
     const maximize = screen.getByLabelText('maximize');
     expect(close).toBeInTheDocument();
-    // Close follows minimize/maximize in DOM order → rightmost in the flex row.
+    // Close follows minimize/maximize in DOM order → outermost in the flex row
+    // (rightmost in LTR, leftmost in RTL — the row sits at the inline-end edge).
     expect(
       maximize.compareDocumentPosition(close) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
@@ -138,5 +139,27 @@ describe('ComposeModal', () => {
     renderModal({ minimized: true, uploadingCount: 0 });
     expect(screen.queryByTestId('compose-minimized-uploading')).not.toBeInTheDocument();
     expect(screen.queryByText('uploading_attachments')).not.toBeInTheDocument();
+  });
+
+  // Guard: RTL-safe logical positioning (spec 2026-07-14). Physical right-*/
+  // rounded-l/r would pin the controls to the right even under dir="rtl".
+  it('window controls use logical inline-end positioning', () => {
+    renderModal();
+    const controls = screen.getByLabelText('minimize').parentElement as HTMLElement;
+    expect(controls.className).toContain('end-3');
+    expect(controls.className).not.toMatch(/\bright-\d/);
+  });
+
+  it('minimized bar uses logical inline-end positioning and corner rounding', () => {
+    renderModal({ minimized: true });
+    const closeBtn = screen.getByTestId('compose-minimized-close');
+    const bar = closeBtn.parentElement as HTMLElement;
+    expect(bar.className).toContain('end-4');
+    expect(bar.className).not.toMatch(/\bright-\d/);
+    const restore = screen.getByText('Test subject').closest('button') as HTMLElement;
+    expect(restore.className).toContain('rounded-s-lg');
+    expect(restore.className).toContain('ps-3');
+    expect(restore.className).toContain('pe-1');
+    expect(closeBtn.className).toContain('rounded-e-lg');
   });
 });
