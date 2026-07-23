@@ -686,7 +686,12 @@
     "recipient_name_placeholder": "الاسم المعروض",
     "autocomplete_search_server": "البحث في الخادم",
     "autocomplete_searching": "جارٍ البحث...",
-    "send_filing_warning": "تم الإرسال - لكن التنظيف بعد الإرسال فشل، وقد تبقى مسودة قديمة."
+    "send_filing_warning": "تم الإرسال - لكن التنظيف بعد الإرسال فشل، وقد تبقى مسودة قديمة.",
+    "minimize": "تصغير",
+    "maximize": "تكبير",
+    "restore_size": "استعادة الحجم",
+    "close": "إغلاق",
+    "uploading_attachments": "جارٍ تحميل المرفقات…"
   },
   "confirm_dialog": {
     "confirm": "تأكيد",
