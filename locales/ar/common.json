@@ -915,7 +915,7 @@
   "email_composer": {
     "select_from_directory": "الاختيار من الدليل",
     "minimize": "تصغير",
-    "maximize": "ملء الشاشة",
+    "maximize": "تكبير",
     "restore": "استعادة",
     "new_message": "رسالة جديدة",
     "signature_edit_hint": "انقر نقرًا مزدوجًا لتحرير التوقيع",
@@ -1163,6 +1163,9 @@
     "send_guard_failed": "لم يُرسَل - فشلت إضافة تفحص الرسائل قبل الإرسال أو لم تستجب.",
     "cut": "قص",
     "copy": "نسخ",
+    "restore_size": "استعادة الحجم",
+    "close": "إغلاق",
+    "uploading_attachments": "جارٍ تحميل المرفقات…",
     "recipient_remove_named": "إزالة {name}",
     "recipient_chip_hint": "يزيله مفتاح Delete، ويفتح Enter خيارات أخرى",
     "recipient_move_to": "نقل إلى {field}",
