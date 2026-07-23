@@ -846,7 +846,12 @@
     "pop_out": "فتح الرد في نافذة منفصلة",
     "send_guard_failed": "لم يُرسَل - فشلت إضافة تفحص الرسائل قبل الإرسال أو لم تستجب.",
     "cut": "قص",
-    "copy": "نسخ"
+    "copy": "نسخ",
+    "minimize": "تصغير",
+    "maximize": "تكبير",
+    "restore_size": "استعادة الحجم",
+    "close": "إغلاق",
+    "uploading_attachments": "جارٍ تحميل المرفقات…"
   },
   "confirm_dialog": {
     "confirm": "تأكيد",
