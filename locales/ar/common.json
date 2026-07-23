@@ -720,7 +720,12 @@
       "delete_table": "حذف الجدول",
       "pick_size": "اختيار الحجم"
     },
-    "send_filing_warning": "تم الإرسال - لكن التنظيف بعد الإرسال فشل، وقد تبقى مسودة قديمة."
+    "send_filing_warning": "تم الإرسال - لكن التنظيف بعد الإرسال فشل، وقد تبقى مسودة قديمة.",
+    "minimize": "تصغير",
+    "maximize": "تكبير",
+    "restore_size": "استعادة الحجم",
+    "close": "إغلاق",
+    "uploading_attachments": "جارٍ تحميل المرفقات…"
   },
   "confirm_dialog": {
     "confirm": "تأكيد",
