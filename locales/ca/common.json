@@ -846,7 +846,12 @@
     "pop_out": "Obre la resposta en una finestra",
     "send_guard_failed": "No s'ha enviat: un connector que revisa els missatges abans d'enviar-los ha fallat o no ha respost.",
     "cut": "Retalla",
-    "copy": "Copia"
+    "copy": "Copia",
+    "minimize": "Minimitza",
+    "maximize": "Maximitza",
+    "restore_size": "Restaura la mida",
+    "close": "Tanca",
+    "uploading_attachments": "S'estan penjant els adjunts…"
   },
   "confirm_dialog": {
     "confirm": "Confirma",
