@@ -720,7 +720,12 @@
       "delete_table": "Elimina la taula",
       "pick_size": "Tria la mida"
     },
-    "send_filing_warning": "Enviat, però la neteja posterior a l'enviament ha fallat; és possible que quedi un esborrany obsolet."
+    "send_filing_warning": "Enviat, però la neteja posterior a l'enviament ha fallat; és possible que quedi un esborrany obsolet.",
+    "minimize": "Minimitza",
+    "maximize": "Maximitza",
+    "restore_size": "Restaura la mida",
+    "close": "Tanca",
+    "uploading_attachments": "S'estan penjant els adjunts…"
   },
   "confirm_dialog": {
     "confirm": "Confirma",
