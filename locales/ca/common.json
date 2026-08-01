@@ -815,7 +815,7 @@
   "email_composer": {
     "select_from_directory": "Selecciona del directori",
     "minimize": "Minimitza",
-    "maximize": "Pantalla completa",
+    "maximize": "Maximitza",
     "restore": "Restaura",
     "new_message": "Missatge nou",
     "signature_edit_hint": "Feu doble clic per editar la signatura",
@@ -1063,6 +1063,9 @@
     "send_guard_failed": "No s'ha enviat: un connector que revisa els missatges abans d'enviar-los ha fallat o no ha respost.",
     "cut": "Retalla",
     "copy": "Copia",
+    "restore_size": "Restaura la mida",
+    "close": "Tanca",
+    "uploading_attachments": "S'estan penjant els adjunts…",
     "recipient_remove_named": "Treu {name}",
     "recipient_chip_hint": "Supr el treu, Retorn obre més opcions",
     "recipient_move_to": "Mou a {field}",
