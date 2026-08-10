@@ -964,13 +964,21 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
   const guardComposerSession = useCallback((start: () => void | Promise<void>) => {
     const requestClose = composerRequestCloseRef.current;
     if (requestClose) {
+      // A failed Save deliberately leaves the old composer's explicit-close
+      // flag false so its unmount cleanup can still hand the unsaved text to
+      // onSaveState (the "continue draft" banner's source - see
+      // handleSaveDraftAndClose in email-composer.tsx). That cleanup fires
+      // AFTER the queued session below has already mounted its own composer,
+      // so without this it would clobber the new session's pendingDraft with
+      // the old, already-abandoned draft. Suppress that one stale write.
+      suppressComposerStateSaveSessionRef.current = composerSessionId;
       pendingComposerStartRef.current = start;
       setComposerMinimized(false); // surface the window so the dialog is visible
       requestClose();
       return;
     }
     void start();
-  }, []);
+  }, [composerSessionId]);
 
   const openMailtoDraft = useCallback((pending: ParsedMailto) => {
     const body = useSettingsStore.getState().plainTextMode
@@ -3609,6 +3617,7 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
                     return;
                   }
                   guardComposerSession(() => {
+                    setComposerSessionId((id) => id + 1);
                     if (email.isSmimeScheduled) {
                       setComposerMode('compose');
                       setPendingDraft(null);
@@ -3851,6 +3860,7 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
                       const restored = await cancelScheduledEmailForEdit(client, selectedEmail);
                       if (selectedEmail.isSmimeScheduled) {
                         guardComposerSession(() => {
+                          setComposerSessionId((id) => id + 1);
                           setComposerMode('compose');
                           setShowComposer(true);
                         });
