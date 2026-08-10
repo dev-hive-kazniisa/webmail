@@ -2030,18 +2030,17 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
     // A live composer owns text the user has not sent. Replacing it outright
     // used to drop that text on the floor - the stash suppression below is an
     // ordering fix, not a decision anyone made. Route the request through the
-    // composer's own "Save or discard draft?" guard instead and open the
-    // mailto draft only once it has actually closed; cancelling leaves the
-    // draft alone. No suppression on that path: when a save fails the composer
-    // deliberately hands its text back to the continue-draft slot (#702), and
-    // that rescue must win over this request.
-    const requestClose = composerRequestCloseRef.current;
-    if (showComposer && requestClose) {
-      requestClose(() => applyMailtoDraft(pending, false));
+    // same dirty-aware guard as every other compose entry point instead, and
+    // open the mailto draft only once the live one has actually closed;
+    // cancelling leaves the draft alone. No suppression on that path: when a
+    // save fails the composer deliberately hands its text back to the
+    // continue-draft slot (#702), and that rescue must win over this request.
+    if (showComposer && composerRequestCloseRef.current) {
+      guardComposerSession(() => applyMailtoDraft(pending, false));
       return;
     }
     applyMailtoDraft(pending, showComposer);
-  }), [applyMailtoDraft, showComposer, withComposeGate]);
+  }), [applyMailtoDraft, guardComposerSession, showComposer, withComposeGate]);
 
   const openMailtoDraft = useCallback(async (pending: DraftRequest): Promise<boolean> => {
     if (await openMailtoInWindow(pending)) return true;
@@ -4163,9 +4162,6 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
         accountId: email.sourceClientAccountId ?? viewingAccountId ?? undefined,
       },
     });
-    setComposerMode('forward');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
   };
 
   // Batch sibling of handleForwardAsAttachment above: opens ONE composer with
@@ -4220,40 +4216,44 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
       if (!ok) return;
     }
 
-    if (!(await withComposeGate('forward', { subject: payload.subject }, () => {}))) return;
+    // Same draft guard as every other compose entry point: a live composer
+    // resolves its draft (save/discard dialog) before this one replaces it.
+    guardComposerSession(async () => {
+      if (!(await withComposeGate('forward', { subject: payload.subject }, () => {}))) return;
 
-    // A selection in the Unified Inbox can span logins, and a blobId only
-    // resolves on the login that holds the message. Tag each attachment with
-    // its own login so the composer copies the foreign ones over before
-    // saving; when they all share one, the composer also defaults to it.
-    const owners = transformed
-      .filter((e) => e.blobId)
-      .map((e) => e.sourceClientAccountId ?? viewingAccountId ?? undefined);
-    const attachments = payload.attachments.map((att, i) =>
-      owners[i] ? { ...att, sourceAccountId: owners[i] } : att);
-    const sharedOwner = owners.every((o) => o === owners[0]) ? owners[0] : undefined;
+      // A selection in the Unified Inbox can span logins, and a blobId only
+      // resolves on the login that holds the message. Tag each attachment with
+      // its own login so the composer copies the foreign ones over before
+      // saving; when they all share one, the composer also defaults to it.
+      const owners = transformed
+        .filter((e) => e.blobId)
+        .map((e) => e.sourceClientAccountId ?? viewingAccountId ?? undefined);
+      const attachments = payload.attachments.map((att, i) =>
+        owners[i] ? { ...att, sourceAccountId: owners[i] } : att);
+      const sharedOwner = owners.every((o) => o === owners[0]) ? owners[0] : undefined;
 
-    startFreshComposerSession();
-    setPendingDraft({
-      to: "",
-      cc: "",
-      bcc: "",
-      subject: payload.subject,
-      body: "",
-      showCc: false,
-      showBcc: false,
-      selectedIdentityId: null,
-      subAddressTag: "",
-      mode: "forward",
-      draftId: null,
-      // No single original subject to quote - the count-based subject above
-      // is the whole story, and the composer seeds attachments from this array.
-      replyTo: { attachments, ...(sharedOwner ? { accountId: sharedOwner } : {}) },
+      startFreshComposerSession();
+      setPendingDraft({
+        to: "",
+        cc: "",
+        bcc: "",
+        subject: payload.subject,
+        body: "",
+        showCc: false,
+        showBcc: false,
+        selectedIdentityId: null,
+        subAddressTag: "",
+        mode: "forward",
+        draftId: null,
+        // No single original subject to quote - the count-based subject above
+        // is the whole story, and the composer seeds attachments from this array.
+        replyTo: { attachments, ...(sharedOwner ? { accountId: sharedOwner } : {}) },
+      });
+      setComposerMode('forward');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
+      clearSelection(); // only on success - a vetoed/no-op attempt keeps the selection
     });
-    setComposerMode('forward');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
-    clearSelection(); // only on success - a vetoed/no-op attempt keeps the selection
   };
 
   // Taking the open message out of the folder (delete, archive, move, spam,
@@ -7053,17 +7053,21 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                   // The context menu does not wait for this; report here.
                   const restored = await cancelScheduledForEdit(email);
                   if (restored === undefined) return;
-                  if (email.isSmimeScheduled) {
-                    setComposerMode('compose');
-                    setPendingDraft(null);
-                  } else if (restored) {
+                  if (!email.isSmimeScheduled && restored) {
                     // Restored through the active login's client, the one
                     // Scheduled lists - not a login browsed before.
+                    // handleEditDraft is guarded internally.
                     await handleEditDraft(restored, { accountId: email.scheduledAccountId, localAccountId: activeAccountId ?? undefined }).catch(reportDraftOpenFailure);
                     return;
                   }
-                  setShowComposer(true);
-                  if (isMobile) setActiveView('viewer');
+                  guardComposerSession(() => {
+                    if (email.isSmimeScheduled) {
+                      setComposerMode('compose');
+                      setPendingDraft(null);
+                    }
+                    setShowComposer(true);
+                    if (isMobile) setActiveView('viewer');
+                  });
                 }}
                 onRescheduleScheduled={(email) => setRescheduleTarget(email)}
                 onCancelScheduledSend={handleCancelScheduledSend}
@@ -7466,8 +7470,10 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                       const restored = await cancelScheduledForEdit(selectedEmail);
                       if (restored === undefined) return;
                       if (selectedEmail.isSmimeScheduled) {
-                        setComposerMode('compose');
-                        setShowComposer(true);
+                        guardComposerSession(() => {
+                          setComposerMode('compose');
+                          setShowComposer(true);
+                        });
                         return;
                       }
                       // Restored through the active login's client (see the list's Cancel and edit).
