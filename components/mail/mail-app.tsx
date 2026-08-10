@@ -5133,6 +5133,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                     return;
                   }
                   guardComposerSession(() => {
+                    setComposerSessionId((id) => id + 1);
                     if (email.isSmimeScheduled) {
                       setComposerMode('compose');
                       setPendingDraft(null);
@@ -5419,6 +5420,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                       const restored = await cancelScheduledEmailForEdit(client, selectedEmail);
                       if (selectedEmail.isSmimeScheduled) {
                         guardComposerSession(() => {
+                          setComposerSessionId((id) => id + 1);
                           setComposerMode('compose');
                           setShowComposer(true);
                         });
