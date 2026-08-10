@@ -946,32 +946,61 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
     }
   }, [initialCheckDone, isAuthenticated, authLoading]);
 
+  // Force a clean composer remount on every fresh entry point so prior
+  // compose state can't bleed into the new session (#329 C). The composer is
+  // keyed on composerSessionId, and pendingDraft would otherwise pin the
+  // composer to a stale draft from a discarded reply.
+  const startFreshComposerSession = useCallback(() => {
+    setComposerSessionId(id => id + 1);
+    setPendingDraft(null);
+  }, []);
+
+  // A fresh session must never silently destroy a live (possibly minimized)
+  // compose window: every entry point below remounts the composer via the
+  // session key and wipes its state. While a composer is mounted
+  // (requestCloseRef is set), route the new session through its dirty-aware
+  // close instead: a clean composer closes immediately; a dirty one shows the
+  // "Save draft?" dialog. The queued start runs from onClose once the close
+  // resolves; cancelling the dialog keeps the current draft and drops it.
+  const guardComposerSession = useCallback((start: () => void | Promise<void>) => {
+    const requestClose = composerRequestCloseRef.current;
+    if (requestClose) {
+      pendingComposerStartRef.current = start;
+      setComposerMinimized(false); // surface the window so the dialog is visible
+      requestClose();
+      return;
+    }
+    void start();
+  }, []);
+
   const openMailtoDraft = useCallback((pending: ParsedMailto) => {
     const body = useSettingsStore.getState().plainTextMode
       ? pending.body
       : plainTextToComposerBody(pending.body);
 
-    if (showComposer) {
-      suppressComposerStateSaveSessionRef.current = composerSessionId;
-    }
-    setComposerSessionId((id) => id + 1);
-    setPendingDraft({
-      to: pending.to.join(", "),
-      cc: pending.cc.join(", "),
-      bcc: pending.bcc.join(", "),
-      subject: pending.subject,
-      body,
-      showCc: pending.cc.length > 0,
-      showBcc: pending.bcc.length > 0,
-      selectedIdentityId: null,
-      subAddressTag: "",
-      mode: "compose",
-      draftId: null,
+    // Route through the same dirty-aware guard as every other compose entry
+    // point: a live (possibly minimized) draft gets a "Save or discard?"
+    // prompt instead of being silently replaced by the mailto draft.
+    guardComposerSession(() => {
+      setComposerSessionId((id) => id + 1);
+      setPendingDraft({
+        to: pending.to.join(", "),
+        cc: pending.cc.join(", "),
+        bcc: pending.bcc.join(", "),
+        subject: pending.subject,
+        body,
+        showCc: pending.cc.length > 0,
+        showBcc: pending.bcc.length > 0,
+        selectedIdentityId: null,
+        subAddressTag: "",
+        mode: "compose",
+        draftId: null,
+      });
+      setComposerMode("compose");
+      setShowComposer(true);
+      if (isMobile) setActiveView("viewer");
     });
-    setComposerMode("compose");
-    setShowComposer(true);
-    if (isMobile) setActiveView("viewer");
-  }, [composerSessionId, isMobile, setActiveView, showComposer]);
+  }, [guardComposerSession, isMobile, setActiveView]);
 
   const openMailtoForAccount = useCallback(async (pending: ParsedMailto, accountId: string) => {
     setIsProtocolAccountSwitching(true);
@@ -1592,33 +1621,6 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
     }
   }, [tCommon, tQuote]);
 
-  // Force a clean composer remount on every fresh entry point so prior
-  // compose state can't bleed into the new session (#329 C). The composer is
-  // keyed on composerSessionId, and pendingDraft would otherwise pin the
-  // composer to a stale draft from a discarded reply.
-  const startFreshComposerSession = useCallback(() => {
-    setComposerSessionId(id => id + 1);
-    setPendingDraft(null);
-  }, []);
-
-  // A fresh session must never silently destroy a live (possibly minimized)
-  // compose window: every entry point below remounts the composer via the
-  // session key and wipes its state. While a composer is mounted
-  // (requestCloseRef is set), route the new session through its dirty-aware
-  // close instead: a clean composer closes immediately; a dirty one shows the
-  // "Save draft?" dialog. The queued start runs from onClose once the close
-  // resolves; cancelling the dialog keeps the current draft and drops it.
-  const guardComposerSession = useCallback((start: () => void | Promise<void>) => {
-    const requestClose = composerRequestCloseRef.current;
-    if (requestClose) {
-      pendingComposerStartRef.current = start;
-      setComposerMinimized(false); // surface the window so the dialog is visible
-      requestClose();
-      return;
-    }
-    void start();
-  }, []);
-
   // A new composer session always opens as a regular (non-minimized) window.
   useEffect(() => {
     setComposerMinimized(false);
@@ -1913,27 +1915,29 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
     });
     if (!ok) return;
 
-    startFreshComposerSession();
-    setPendingDraft({
-      to: "",
-      cc: "",
-      bcc: "",
-      subject: payload.subject,
-      body: "",
-      showCc: false,
-      showBcc: false,
-      selectedIdentityId: null,
-      subAddressTag: "",
-      mode: "forward",
-      draftId: null,
-      replyTo: {
-        subject: email.subject,
-        attachments: [payload.attachment],
-      },
+    guardComposerSession(() => {
+      startFreshComposerSession();
+      setPendingDraft({
+        to: "",
+        cc: "",
+        bcc: "",
+        subject: payload.subject,
+        body: "",
+        showCc: false,
+        showBcc: false,
+        selectedIdentityId: null,
+        subAddressTag: "",
+        mode: "forward",
+        draftId: null,
+        replyTo: {
+          subject: email.subject,
+          attachments: [payload.attachment],
+        },
+      });
+      setComposerMode('forward');
+      setShowComposer(true);
+      if (isMobile) setActiveView('viewer');
     });
-    setComposerMode('forward');
-    setShowComposer(true);
-    if (isMobile) setActiveView('viewer');
   };
 
   const handleDelete = async (emailToDelete: Email | null = selectedEmail) => {
@@ -3620,15 +3624,18 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
                 onCancelScheduledForEdit={async (email) => {
                   if (!client) return;
                   const restored = await cancelScheduledEmailForEdit(client, email);
-                  if (email.isSmimeScheduled) {
-                    setComposerMode('compose');
-                    setPendingDraft(null);
-                  } else if (restored) {
-                    await handleEditDraft(restored);
+                  if (!email.isSmimeScheduled && restored) {
+                    await handleEditDraft(restored); // guarded internally
                     return;
                   }
-                  setShowComposer(true);
-                  if (isMobile) setActiveView('viewer');
+                  guardComposerSession(() => {
+                    if (email.isSmimeScheduled) {
+                      setComposerMode('compose');
+                      setPendingDraft(null);
+                    }
+                    setShowComposer(true);
+                    if (isMobile) setActiveView('viewer');
+                  });
                 }}
                 onRescheduleScheduled={async (email) => {
                   const delayedUntil = promptForRescheduleDelayedUntil();
@@ -3860,11 +3867,13 @@ export function MailApp({ linkSegments }: MailAppProps = {}) {
                       if (!client || !selectedEmail) return;
                       const restored = await cancelScheduledEmailForEdit(client, selectedEmail);
                       if (selectedEmail.isSmimeScheduled) {
-                        setComposerMode('compose');
-                        setShowComposer(true);
+                        guardComposerSession(() => {
+                          setComposerMode('compose');
+                          setShowComposer(true);
+                        });
                         return;
                       }
-                      if (restored) await handleEditDraft(restored);
+                      if (restored) await handleEditDraft(restored); // guarded internally
                     }}
                     onRescheduleScheduled={async (delayedUntil) => {
                       if (client && selectedEmail?.emailSubmissionId && selectedEmail.scheduledIdentityId) {
