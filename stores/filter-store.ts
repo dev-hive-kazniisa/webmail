@@ -3,12 +3,27 @@ import type { IJMAPClient } from '@/lib/jmap/client-interface';
 import type { FilterRule, SieveCapabilities, VacationAudience, VacationForward, VacationSieveConfig } from '@/lib/jmap/sieve-types';
 import { parseScript } from '@/lib/sieve/parser';
 import { generateScript, supportsSpamGuard, VACATION_SCRIPT_NAME } from '@/lib/sieve/generator';
-import { OpaqueFiltersError, applyScriptTransforms, supportsInclude, writeFiltersScript } from '@/lib/filters/account-filters';
+import { countKeywordUses, renameKeywordInRules } from '@/lib/sieve/keyword-rename';
+import {
+  applyScriptTransforms, OpaqueFiltersError, readAccountFilters, renderFiltersScript, supportsInclude, writeFiltersScript,
+} from '@/lib/filters/account-filters';
 import { worstCaseForwards } from '@/lib/filters/forward-limit';
 import { supportsPeriods } from '@/lib/sieve/period';
 import { isValidVacationForward, withVacationPeriod } from '@/lib/sieve/vacation-forward';
 import { isValidVacationAudience, normalizeVacationAudience } from '@/lib/sieve/vacation-audience';
 import { debug } from '@/lib/debug';
+
+/** What a tag rename managed to do to the filters that name the tag. */
+export interface KeywordRenameOutcome {
+  /** Filter actions rewritten to the new tag id. */
+  changed: number;
+  /**
+   * References to the old tag left in place because the script is hand-edited
+   * and is kept verbatim. The caller should tell the user, who has to fix those
+   * by hand - nothing else will.
+   */
+  unhandled: number;
+}
 
 interface SieveAccount {
   id: string;
@@ -40,6 +55,7 @@ interface FilterStore {
   fetchFilters: (client: IJMAPClient, accountId?: string) => Promise<void>;
   selectAccount: (client: IJMAPClient, accountId: string) => Promise<void>;
   saveFilters: (client: IJMAPClient) => Promise<void>;
+  renameKeywordInFilters: (client: IJMAPClient, oldId: string, newId: string) => Promise<KeywordRenameOutcome>;
   validateScript: (client: IJMAPClient, content: string) => Promise<{ isValid: boolean; errors?: string[] }>;
   addRule: (rule: FilterRule) => void;
   updateRule: (ruleId: string, updates: Partial<FilterRule>) => void;
@@ -215,6 +231,78 @@ export const useFilterStore = create<FilterStore>()((set, get) => ({
       });
       throw error;
     }
+  },
+
+  /**
+   * Follows a renamed tag into this account's filters.
+   *
+   * Renaming a tag changes its id, and therefore the `$label:` keyword a rule
+   * writes. Migrating only the messages (`migrateKeyword`) would leave the rule
+   * tagging new mail under the old id, which nothing names any more - the rule
+   * looks broken while running exactly as written.
+   *
+   * The script is fetched and written back on its own rather than through
+   * `fetchFilters`/`saveFilters`, so a rename from the tag settings never
+   * disturbs which account an open filter view is showing. That view is updated
+   * in place when it happens to be showing this same account.
+   *
+   * A hand-edited (opaque) script is left alone - it has no parsed rules to
+   * rewrite and re-generating it would discard the user's own Sieve - and its
+   * remaining references are reported instead. Upload failures propagate.
+   */
+  renameKeywordInFilters: async (client, oldId, newId) => {
+    const nothing: KeywordRenameOutcome = { changed: 0, unhandled: 0 };
+    if (!oldId || !newId || oldId === newId) return nothing;
+    if (!client.supportsSieve()) return nothing;
+
+    // The account that runs the rules. A rule can only tag mail arriving in
+    // its own account, so this is the one to rewrite even in a session where
+    // the Sieve and mail primaries are different accounts - which RFC 8620
+    // permits, and which the caller's message migration, bound to the mail
+    // primary, would not have covered anyway.
+    const accountId = client.getSieveAccountId();
+    const filters = await readAccountFilters(client, accountId);
+    const activeScript = filters.script;
+    if (!activeScript || !activeScript.isActive) {
+      // Nothing is filtering mail right now. Rewriting an inactive script would
+      // mean activating it - updateSieveScript activates on write - and a tag
+      // rename must not switch someone's filters back on.
+      return nothing;
+    }
+
+    const { parsed, content } = filters;
+    if (parsed.isOpaque) {
+      return { changed: 0, unhandled: countKeywordUses(content, oldId) };
+    }
+
+    const { rules, changed } = renameKeywordInRules(parsed.rules, oldId, newId);
+    if (changed === 0) return { changed: 0, unhandled: countKeywordUses(content, oldId) };
+
+    // Same pipeline a normal save runs through (plugin transform, vacation
+    // include, filter hooks), or a plugin's managed section would be dropped
+    // from the script this write makes active.
+    const written = await writeFiltersScript(
+      client, accountId, renderFiltersScript(rules, filters), activeScript.id,
+    );
+    const script = written.content;
+
+    // Count what still names the old tag in the script actually written,
+    // after the plugin transform: a rule kept verbatim, a test comparing
+    // against the keyword, or a section a plugin just grafted back on.
+    const unhandled = countKeywordUses(script, oldId);
+    debug.log('filters', 'Renamed tag in', changed, 'filter action(s)');
+
+    const state = get();
+    if (state.selectedAccountId === accountId && !state.isOpaque) {
+      set({
+        rules,
+        rawScript: script,
+        activeScriptId: activeScript.id,
+        vacationSettings: parsed.vacation || null,
+        externalRequires: parsed.externalRequires,
+      });
+    }
+    return { changed, unhandled };
   },
 
   validateScript: async (client, content) => {
