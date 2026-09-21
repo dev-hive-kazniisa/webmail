@@ -915,7 +915,7 @@
   "email_composer": {
     "select_from_directory": "從目錄中選取",
     "minimize": "最小化",
-    "maximize": "全螢幕",
+    "maximize": "最大化",
     "restore": "還原",
     "new_message": "新郵件",
     "signature_edit_hint": "點兩下即可編輯簽名檔",
@@ -1163,6 +1163,9 @@
     "send_guard_failed": "未傳送 - 傳送前檢查郵件的外掛程式發生錯誤或沒有回應。",
     "cut": "剪下",
     "copy": "複製",
+    "restore_size": "還原大小",
+    "close": "關閉",
+    "uploading_attachments": "正在上傳附件…",
     "recipient_remove_named": "移除 {name}",
     "recipient_chip_hint": "按 Delete 移除，按 Enter 開啟更多選項",
     "recipient_move_to": "移到{field}",
@@ -1669,7 +1672,7 @@
       "cancel": "取消",
       "migrating": "正在更新現有郵件的標籤…",
       "migration_error": "更新現有郵件的標籤失敗",
-      "filters_migration_error": "部分篩選規則仍在使用舊標籤，請手動更新",
+      "filters_migration_error": "部分篩選規則仍使用舊標籤，請手動更新",
       "nesting": {
         "label": "巢狀標籤",
         "description": "將標籤巢狀放在其他標籤下，並在側邊欄以樹狀結構顯示。"

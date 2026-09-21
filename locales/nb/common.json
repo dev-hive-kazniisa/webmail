@@ -915,7 +915,7 @@
   "email_composer": {
     "select_from_directory": "Velg fra katalog",
     "minimize": "Minimer",
-    "maximize": "Fullskjerm",
+    "maximize": "Maksimer",
     "restore": "Gjenopprett",
     "new_message": "Ny melding",
     "signature_edit_hint": "Dobbeltklikk for å redigere signaturen",
@@ -1163,6 +1163,9 @@
     "send_guard_failed": "Ikke sendt - et tillegg som sjekker meldinger før sending, feilet eller svarte ikke.",
     "cut": "Klipp ut",
     "copy": "Kopier",
+    "restore_size": "Gjenopprett størrelse",
+    "close": "Lukk",
+    "uploading_attachments": "Laster opp vedlegg…",
     "recipient_remove_named": "Fjern {name}",
     "recipient_chip_hint": "Delete fjerner mottakeren, Enter åpner flere valg",
     "recipient_move_to": "Flytt til {field}",
@@ -1669,7 +1672,7 @@
       "cancel": "Avbryt",
       "migrating": "Oppdaterer etiketten på eksisterende e-poster...",
       "migration_error": "Kunne ikke oppdatere etiketten på eksisterende e-poster",
-      "filters_migration_error": "Noen filterregler bruker fortsatt den gamle etiketten – oppdater dem manuelt",
+      "filters_migration_error": "Noen filterregler bruker fortsatt den gamle etiketten — oppdater dem manuelt",
       "nesting": {
         "label": "Nestede etiketter",
         "description": "Plasser etiketter under hverandre og vis dem som et hierarki i sidefeltet."
