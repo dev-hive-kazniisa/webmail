@@ -778,7 +778,12 @@
       "background_color": "Bakgrunnsfarge",
       "remove_background_color": "Fjern bakgrunnsfarge"
     },
-    "send_filing_warning": "Meldingen ble sendt, men oppryddingen etterpå mislyktes. Et gammelt utkast kan bli liggende."
+    "send_filing_warning": "Meldingen ble sendt, men oppryddingen etterpå mislyktes. Et gammelt utkast kan bli liggende.",
+    "minimize": "Minimer",
+    "maximize": "Maksimer",
+    "restore_size": "Gjenopprett størrelse",
+    "close": "Lukk",
+    "uploading_attachments": "Laster opp vedlegg…"
   },
   "confirm_dialog": {
     "confirm": "Bekreft",
@@ -1209,7 +1214,8 @@
         "add_all": "Legg til alle {count}",
         "partial": "Bare de {scanned} siste av {total} meldingene ble skannet. Etiketter som bare brukes på eldre e-poster, kan mangle.",
         "error": "Kunne ikke søke gjennom meldingene etter etiketter."
-      }
+      },
+      "filters_migration_error": "Noen filterregler bruker fortsatt den gamle etiketten — oppdater dem manuelt"
     },
     "notifications": {
       "test_sound": "Test varslingslyden",

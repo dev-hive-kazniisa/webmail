@@ -778,7 +778,12 @@
       "background_color": "背景顏色",
       "remove_background_color": "移除背景顏色"
     },
-    "send_filing_warning": "郵件已傳送，但寄送後清理失敗，可能仍保留舊草稿。"
+    "send_filing_warning": "郵件已傳送，但寄送後清理失敗，可能仍保留舊草稿。",
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore_size": "還原大小",
+    "close": "關閉",
+    "uploading_attachments": "正在上傳附件…"
   },
   "confirm_dialog": {
     "confirm": "確認",
@@ -1209,7 +1214,8 @@
         "add_all": "全部新增（{count}）",
         "partial": "僅掃描 {total} 封郵件中最新的 {scanned} 封。只出現在較舊郵件的標籤可能遺漏。",
         "error": "無法掃描郵件中的標籤。"
-      }
+      },
+      "filters_migration_error": "部分篩選規則仍使用舊標籤，請手動更新"
     },
     "notifications": {
       "test_sound": "測試通知聲音",
