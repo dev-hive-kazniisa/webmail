@@ -846,7 +846,12 @@
     "pop_out": "Åpne svaret i et eget vindu",
     "send_guard_failed": "Ikke sendt - et tillegg som sjekker meldinger før sending, feilet eller svarte ikke.",
     "cut": "Klipp ut",
-    "copy": "Kopier"
+    "copy": "Kopier",
+    "minimize": "Minimer",
+    "maximize": "Maksimer",
+    "restore_size": "Gjenopprett størrelse",
+    "close": "Lukk",
+    "uploading_attachments": "Laster opp vedlegg…"
   },
   "confirm_dialog": {
     "confirm": "Bekreft",
@@ -1284,7 +1289,8 @@
         "add_all": "Legg til alle {count}",
         "partial": "Bare de {scanned} siste av {total} meldingene ble skannet. Etiketter som bare brukes på eldre e-poster, kan mangle.",
         "error": "Kunne ikke søke gjennom meldingene etter etiketter."
-      }
+      },
+      "filters_migration_error": "Noen filterregler bruker fortsatt den gamle etiketten — oppdater dem manuelt"
     },
     "notifications": {
       "test_sound": "Test varslingslyden",

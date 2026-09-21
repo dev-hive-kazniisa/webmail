@@ -846,7 +846,12 @@
     "pop_out": "在獨立視窗中開啟回覆",
     "send_guard_failed": "未傳送 - 傳送前檢查郵件的外掛程式發生錯誤或沒有回應。",
     "cut": "剪下",
-    "copy": "複製"
+    "copy": "複製",
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore_size": "還原大小",
+    "close": "關閉",
+    "uploading_attachments": "正在上傳附件…"
   },
   "confirm_dialog": {
     "confirm": "確認",
@@ -1284,7 +1289,8 @@
         "add_all": "全部新增（{count}）",
         "partial": "僅掃描 {total} 封郵件中最新的 {scanned} 封。只出現在較舊郵件的標籤可能遺漏。",
         "error": "無法掃描郵件中的標籤。"
-      }
+      },
+      "filters_migration_error": "部分篩選規則仍使用舊標籤，請手動更新"
     },
     "notifications": {
       "test_sound": "測試通知聲音",
