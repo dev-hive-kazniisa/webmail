@@ -114,6 +114,7 @@ describe('filter-store renameKeywordInFilters', () => {
     const client = {
       supportsSieve: () => true,
       getSieveAccountId: () => 'primary',
+      getSieveCapabilities: () => null,
       getSieveScripts: async () => [],
     } as unknown as IJMAPClient;
 
@@ -137,6 +138,7 @@ describe('filter-store renameKeywordInFilters', () => {
     const client = {
       supportsSieve: () => false,
       getSieveAccountId: () => 'primary',
+      getSieveCapabilities: () => null,
       getSieveScripts: async () => {
         throw new Error('should not be called');
       },

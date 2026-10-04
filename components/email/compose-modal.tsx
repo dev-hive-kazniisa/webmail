@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Maximize2, Minimize2, Minus, PenLine, X } from "lucide-react";
+import { Loader2, Maximize2, Minimize2, Minus, PenLine, X } from "@/components/icons";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
