@@ -139,6 +139,7 @@ describe('filter-store renameKeywordInFilters', () => {
     const client = {
       supportsSieve: () => false,
       getSieveAccountId: () => 'primary',
+      getSieveCapabilities: () => null,
       getSieveScripts: async () => {
         throw new Error('should not be called');
       },
