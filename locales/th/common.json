@@ -1069,7 +1069,10 @@
   "email_composer": {
     "select_from_directory": "เลือกจากสมุดรายชื่อองค์กร",
     "minimize": "ย่อหน้าต่าง",
-    "maximize": "เต็มหน้าจอ",
+    "maximize": "ขยายใหญ่สุด",
+    "restore_size": "คืนขนาดหน้าต่าง",
+    "close": "ปิด",
+    "uploading_attachments": "กำลังอัปโหลดไฟล์แนบ…",
     "restore": "คืนขนาดเดิม",
     "new_message": "เขียนจดหมายใหม่",
     "reply": "ตอบกลับ",
