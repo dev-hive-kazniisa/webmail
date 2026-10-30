@@ -5372,7 +5372,11 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
                 }}
                 onClearSearch={() => void handleClearSearch()}
                 onCompose={() => {
-                  void withComposeGate('compose', {}, () => {
+                  // Empty-Drafts "Compose" button: same draft guard as every
+                  // other entry point, gate inside it (closing a live composer
+                  // resets the plugin prefill).
+                  guardComposerSession(async () => {
+                    if (!(await withComposeGate('compose', {}, () => {}))) return;
                     startFreshComposerSession();
                     setComposerMode('compose');
                     setShowComposer(true);
