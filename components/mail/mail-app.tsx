@@ -388,9 +388,19 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
   // composer stays with its question, and this never settles: nothing opens.
   const closeOpenComposer = useCallback(() => new Promise<void>((resolve) => {
     const requestClose = composerRequestCloseRef.current;
-    if (showComposerRef.current && requestClose) requestClose(resolve);
-    else resolve();
+    if (showComposerRef.current && requestClose) {
+      // KazNIISA: a minimized compose modal is surfaced first so its
+      // "Save draft?" dialog is visible.
+      setComposerMinimized(false);
+      requestClose(resolve);
+    } else resolve();
   }), []);
+  // A fresh composer session must never silently destroy a live (possibly
+  // minimized) draft: the new session starts only once the open composer
+  // has really closed (see closeOpenComposer).
+  const guardComposerSession = useCallback((start: () => void | Promise<void>) => {
+    void closeOpenComposer().then(() => start());
+  }, [closeOpenComposer]);
   const { dialogProps: confirmDialogProps, confirm: confirmDialog } = useConfirmDialog();
   const { dialogProps: promptDialogProps, prompt: promptDialog } = usePromptDialog();
   const { showAppsModal, inlineApp, loadedApps, handleManageApps, handleInlineApp, closeInlineApp, closeAppsModal } = useSidebarApps();
@@ -7045,6 +7055,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
             )}
             {dockedReply && <ReplyDock>{composerNode}</ReplyDock>}
             </>
+            )}
           </section>
           </div>
 
