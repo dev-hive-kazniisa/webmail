@@ -6567,6 +6567,7 @@ export function MailApp({ linkSegments: routeSegments }: MailAppProps = {}) {
         }}
         requestCloseRef={composerRequestCloseRef}
         onAttachmentUploadStateChange={setComposerUploadingCount}
+        hideWindowButtons={modalComposer}
         onDiscardDraft={(draftId, draft) => {
           // Once it is gone, the card under its message goes too (compose-p3-2).
           void handleDiscardDraft(draftId, draft).finally(() => {

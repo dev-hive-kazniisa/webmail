@@ -464,6 +464,12 @@ interface EmailComposerProps {
    */
   onAttachmentUploadStateChange?: (uploadingCount: number) => void;
   /**
+   * The host draws its own window controls over the end of the header (the
+   * KazNIISA compose modal): hide the composer's maximize / open-in-window /
+   * close on md+, keeping their room. Phones still show them.
+   */
+  hideWindowButtons?: boolean;
+  /**
    * `accountId`: the account the draft lives in, when not the own one (see
    * ComposerDraftData.draftAccountId). `localAccountId`: the login it was
    * saved through, as for onSend.
@@ -703,6 +709,7 @@ export function EmailComposer({
   onClose,
   requestCloseRef,
   onAttachmentUploadStateChange,
+  hideWindowButtons = false,
   onDiscardDraft,
   onSaveState,
   onRestoreDiscarded,
@@ -5336,7 +5343,7 @@ export function EmailComposer({
 
   // What ends the header row: the window buttons, Close last. With the right
   // panel open they end its head instead, at the far end of the composer.
-  const windowButtons = (
+  const ownWindowButtons = (
     <>
       {canMaximize && (
         <button
@@ -5354,6 +5361,17 @@ export function EmailComposer({
       {!closeBesideControls && composerCloseButton}
     </>
   );
+  // KazNIISA compose modal: on md+ the modal draws its own minimize /
+  // maximize / close over the end of this header, so these are hidden there
+  // and a spacer of the overlay's width (3 × 32px + 2 × 4px) keeps Send and
+  // the rest of the row from sliding under it. Phones keep them: the modal's
+  // controls are desktop-only, and this Close is then the only one.
+  const windowButtons = hideWindowButtons ? (
+    <>
+      <div className="contents md:hidden">{ownWindowButtons}</div>
+      <div aria-hidden="true" className="hidden md:block w-[104px] shrink-0" data-testid="composer-window-controls-spacer" />
+    </>
+  ) : ownWindowButtons;
   const mvInlineButtons = mvWindow && (
     <>
       {mvWindow.popOut && (
