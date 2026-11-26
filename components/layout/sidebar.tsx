@@ -209,9 +209,10 @@ const RailLabelsContext = createContext(false);
  */
 const SIDEBAR_HEAD_BUTTON = "text-muted-foreground hover:bg-muted hover:text-foreground";
 
-// Compose in the folder sidebar: pill corners for the main action, in a tint
-// of the primary colour so it doesn't outshine the folders.
-const SIDEBAR_COMPOSE = "min-w-0 h-9 justify-start gap-2 px-3 rounded-full bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary";
+// Compose in the folder sidebar: pill corners for the main action.
+// KazNIISA: solid primary (the Button's default variant), as before 1.22 —
+// upstream's quieter bg-primary/10 tint read as a disabled control here.
+const SIDEBAR_COMPOSE = "min-w-0 h-9 justify-start gap-2 px-3 rounded-full";
 
 /** Keeps Tab and Shift+Tab inside `root`, wrapping at either end. */
 function trapTab(e: React.KeyboardEvent, root: HTMLElement | null) {
@@ -2760,7 +2761,6 @@ function SidebarImpl({
             {!isCollapsed && !sidebarAccountSwitcher && composeHere && (
               <Button
                 onClick={onCompose}
-                variant="ghost"
                 className={cn("flex-1", SIDEBAR_COMPOSE)}
                 data-sidebar-compose=""
                 data-tour="compose-button"
@@ -2775,7 +2775,6 @@ function SidebarImpl({
             <div className="px-2 pb-2">
               <Button
                 onClick={onCompose}
-                variant="ghost"
                 className={cn("w-full", SIDEBAR_COMPOSE)}
                 data-sidebar-compose=""
                 data-tour="compose-button"
@@ -2790,7 +2789,7 @@ function SidebarImpl({
             <div className={cn("flex justify-center pb-2", railLabels && "w-[calc(100%-13rem)]")}>
               <IconButton
                 onClick={onCompose}
-                className="bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                variant="default"
                 data-sidebar-compose=""
                 data-tour="compose-button"
                 label={t("compose")}
